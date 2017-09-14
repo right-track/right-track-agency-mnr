@@ -1,0 +1,11 @@
+{
+  "name": "Metro North Railroad & SLE",
+  "id": "mnr",
+  "db_location": "./database.db",
+  "db_archive_location": "../db_archive/mnr/",
+  "maintainer": {
+    "name": "David Waring",
+    "email": "dev@davidwaring.net",
+    "website": "https://www.davidwaring.net/"
+  }
+}
