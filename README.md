@@ -7,22 +7,26 @@ extend the functionality of the **right-track-core** module.
 ### Features
 
 Currently, this module provides the configuration variables for this 
-agency to be used in the _Right Track Library_.
+agency to be used in various projects in the _Right Track Library_.
 
-### Usage
+### Configuration
 
-#### Configuration
+#### Default Configuration
 
-The module's ```config()``` function loads the agency's configuration 
-variables.
+When the module is loaded via `require()`, the default configuration file (`agency.json` 
+located in the module's root directory) is loaded.
 
 ```javascript
-const agency = require("right-track-agency-mnr");
-const config = agency.config();                         // load the default configuration  
+const agency = require("right-track-agency-mnr");   // loads the default configuration  
 ``` 
+
+#### Custom Configuration
 
 If you need to override any variables in the default configuration, create a new 
 json file and include any variable definitions to change.
+
+Any relative paths in the configuration file (such as the database location) will 
+be loaded relative to the directory this configuration file is located in.
 
 ```json
 {
@@ -30,8 +34,41 @@ json file and include any variable definitions to change.
 }
 ```
 
-Then, pass the location of the config file to ```config(location)```.
+### Usage
+
+#### Read Custom Configuration File
+
+To load a custom configuration file, use the `read(location)` function.
+
+A relative path passed as the location of the new config file will be loaded 
+relative to the module's root directory.
 
 ```javascript
-const config = agency.config("/path/to/config.json")    // override config variables
+agency.read("/path/to/config.json");               // override config variables
+```
+
+
+#### Get Configuration Variables
+
+Use the `get()` function to get the agency's configuration variables (including 
+any merged in from an additional file via `read()`).
+
+```javascript
+let config = agency.get();
+```
+
+where `config` is an Object containing the agency's configuration.
+
+```
+{ 
+    name: 'Metro North Railroad & SLE',
+    id: 'mnr',
+    db_location: '/right-track/db/db_latest/mnr/database.db',
+    db_archive_location: '/right-track/db/db_archive/mnr/',
+    maintainer: { 
+        name: 'David Waring',
+        email: 'dev@davidwaring.net',
+        website: 'https://www.davidwaring.net/' 
+    } 
+}
 ```
