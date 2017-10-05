@@ -1,12 +1,25 @@
 {
   "name": "Metro North Railroad & SLE",
   "id": "mnr",
-  "db_location": "./database.db",
-  "db_archive_location": "../db_archive/mnr/",
-  "icon_location": "./static/img/icon.png",
   "maintainer": {
     "name": "David Waring",
     "email": "dev@davidwaring.net",
     "website": "https://www.davidwaring.net/"
+  },
+  "db": {
+    "location": "./static/db/latest/database.db",
+    "archiveDir": "./static/db/archive/"
+  },
+  "stationFeed": {
+    "stationURL": "http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID={{STATUS_ID}}",
+    "gtfs-rt": {
+      "url": "https://mnorth.prod.acquia-sites.com/wse/gtfsrtwebapi/v1/gtfsrt/{{GTFS_RT_API_KEY}}/getfeed",
+      "apiKey": ""
+    }
+  },
+  "static": {
+    "img": {
+      "icon": "./static/img/icon.png"
+    }
   }
 }
