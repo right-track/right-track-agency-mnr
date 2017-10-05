@@ -10,7 +10,11 @@
     "docs": "jsdoc -c jsdoc.json --readme README.md --template $NODE_PATH/docdash"
   },
   "dependencies": {
-    "deepmerge": "^1.5.1"
+    "deepmerge": "^1.5.1",
+    "node-html-parser": "^1.1.5"
+  },
+  "peerDependencies": {
+    "right-track-core": "file:../core"
   },
   "devDependencies": {}
 }
