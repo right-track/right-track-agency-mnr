@@ -22,7 +22,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#get">get</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#reset">reset</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#config/get">config/get</a></li><li><a href="global.html#config/read">config/read</a></li><li><a href="global.html#config/reset">config/reset</a></li><li><a href="global.html#feed">feed</a></li></ul>
 </nav>
 
 <div id="main">
@@ -39,73 +39,81 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-const fs = require("fs");
-const path = require("path");
-const merge = require("deepmerge");
+const fs = require('fs');
+const path = require('path');
+const merge = require('deepmerge');
 
 
 // DEFAULT CONFIGURATION FILE
-const defaultLocation = "./agency.json";
+const defaultLocation = './agency.json';
 
 
 // AGENCY CONFIGURATION VARIABLES
 let CONFIG = {};
 
 
+// Load default properties
+reset();
+
+
+
 /**
  * Read the configuration file from the specified path and merge its
  * properties with the default configuration file.
  * @param {string} location Path to agency config file (relative paths are relative to module root)
+ * @alias config/read
  */
-let read = function(location) {
-    if ( location !== undefined ) {
+function read(location) {
+  if ( location !== undefined ) {
 
-        // Relative paths are relative to the project root directory
-        if (location.charAt(0) === ".") {
-            location = path.join(__dirname, "/../", location);
-        }
-        location = path.normalize(location);
-        console.log("--> Reading Agency Config File: " + location);
-
-        // Read new config file
-        let add = JSON.parse(fs.readFileSync(location, 'utf8'));
-
-        // Parse relative paths relative to file location
-        let dirname = path.dirname(location);
-        if (add.db_location !== undefined) {
-            if (add.db_location.charAt(0) === '.') {
-                add.db_location = path.join(dirname, "/", add.db_location);
-            }
-        }
-        if (add.db_archive_location !== undefined) {
-            if (add.db_archive_location.charAt(0) === '.') {
-                add.db_archive_location = path.join(dirname, "/", add.db_archive_location);
-            }
-        }
-        if ( add.icon_location !== undefined ) {
-            if ( add.icon_location.charAt(0) === '.' ) {
-                add.icon_location = path.join(dirname, "/", add.icon_location);
-            }
-        }
-
-        // Merge configs
-        CONFIG = merge(CONFIG, add, {
-            arrayMerge: function (d, s) {
-                return d.concat(s);
-            }
-        });
-
+    // Relative paths are relative to the project root directory
+    if (location.charAt(0) === '.') {
+      location = path.join(__dirname, '/../', location);
     }
-};
+    location = path.normalize(location);
+    console.log('--> Reading Agency Config File: ' + location);
+
+    // Read new config file
+    let add = JSON.parse(fs.readFileSync(location, 'utf8'));
+
+    // Parse relative paths relative to file location
+    // TODO: generalize this into a function that parses all properties
+    let dirname = path.dirname(location);
+    if (add.db !== undefined &amp;&amp; add.db.location !== undefined ) {
+      if (add.db.location.charAt(0) === '.') {
+        add.db.location = path.join(dirname, '/', add.db.location);
+      }
+    }
+    if (add.db !== undefined &amp;&amp; add.db.archiveDir !== undefined ) {
+      if (add.db.archiveDir.charAt(0) === '.') {
+        add.db.archiveDir = path.join(dirname, '/', add.db.archiveDir);
+      }
+    }
+    if ( add.static !== undefined &amp;&amp; add.static.img !== undefined &amp;&amp; add.static.img !== undefined ) {
+      if ( add.static.img.icon.charAt(0) === '.' ) {
+        add.static.img.icon = path.join(dirname, '/', add.static.img.icon);
+      }
+    }
+
+    // Merge configs
+    CONFIG = merge(CONFIG, add, {
+      arrayMerge: function (d, s) {
+        return d.concat(s);
+      }
+    });
+
+  }
+}
 
 
 /**
  * Get the agency configuration variables
  * @returns {object} Agency config variables
+ * @alias config/get
  */
-let get = function() {
-    return CONFIG;
-};
+function get() {
+  return CONFIG;
+}
 
 
 /**
@@ -113,19 +121,24 @@ let get = function() {
  * reload the default configuration.  Any
  * previously added config files will have
  * to be read again.
+ * @alias config/reset
  */
-let reset = function() {
-    CONFIG = {};
-    read(defaultLocation);
-};
+function reset() {
+  CONFIG = {};
+  read(defaultLocation);
+}
+
+
+
+
 
 
 
 // Export Functions
 module.exports = {
-    read: read,
-    get: get,
-    reset: reset
+  read: read,
+  get: get,
+  reset: reset
 };</code></pre>
         </article>
     </section>
@@ -138,7 +151,7 @@ module.exports = {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Sep 26 2017 15:33:48 GMT-0400 (EDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Oct 07 2017 19:14:14 GMT-0400 (EDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

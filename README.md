@@ -2,12 +2,18 @@ Metro North Railroad & SLE
 ==========================
 
 This module is an implementation of a _right-track-agency_ used to 
-extend the functionality of the **right-track-core** module.
+extend the functionality of the [right-track-core](https://github.com/right-track/right-track-core) 
+module.
 
 ### Features
 
-Currently, this module provides the configuration variables for this 
-agency to be used in various projects in the _Right Track Library_.
+This module provides the following agency-specific information:
+
+* The latest compiled Right Track Database for MNR
+* The archived Right Track Databases for MNR
+* Agency configuration properties to be used in various _Right Track_ projects
+* The functions to generate a MNR Station Feed for the 
+[right-track-server](https://github.com/right-track/right-track-server) 
 
 ### Configuration
 
@@ -76,7 +82,7 @@ where `config` is an Object containing the agency's configuration.
    },
    stationFeed:{
       stationURL:'http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID={{STATUS_ID}}',
-      'gtfs-rt':{
+      'gtfsrt':{
          url:'https://mnorth.prod.acquia-sites.com/wse/gtfsrtwebapi/v1/gtfsrt/{{GTFS_RT_API_KEY}}/getfeed',
          apiKey:''
       }
