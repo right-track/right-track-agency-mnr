@@ -1,6 +1,6 @@
 {
   "name": "right-track-agency-mnr",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "Right Track Agency implementation for Metro North Railroad (mnr)",
   "author": "David Waring <dev@davidwaring.net>",
   "license": "MIT",
@@ -10,11 +10,14 @@
     "docs": "jsdoc -c jsdoc.json --readme README.md --template $NODE_PATH/docdash"
   },
   "dependencies": {
-    "deepmerge": "^1.5.1",
+    "deepmerge": "^1.5.2",
+    "memory-cache": "^0.2.0",
     "node-html-parser": "^1.1.5"
   },
   "peerDependencies": {
-    "right-track-core": "file:../core"
+    "right-track-core": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jsdoc": "^3.5.5"
+  }
 }
