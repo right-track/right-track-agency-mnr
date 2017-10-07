@@ -62,15 +62,29 @@ let config = agency.config.get();
 where `config` is an Object containing the agency's configuration.
 
 ```
-{ 
-    name: 'Metro North Railroad & SLE',
-    id: 'mnr',
-    db_location: '/right-track/db/db_latest/mnr/database.db',
-    db_archive_location: '/right-track/db/db_archive/mnr/',
-    maintainer: { 
-        name: 'David Waring',
-        email: 'dev@davidwaring.net',
-        website: 'https://www.davidwaring.net/' 
-    } 
+{
+   name:'Metro North Railroad & SLE',
+   id:'mnr',
+   maintainer:{
+      name:'David Waring',
+      email:'dev@davidwaring.net',
+      website:'https://www.davidwaring.net/'
+   },
+   db:{
+      location:'/right-track/src/agency-mnr/static/db/latest/database.db',
+      archiveDir:'/right-track/src/agency-mnr/static/db/archive/'
+   },
+   stationFeed:{
+      stationURL:'http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID={{STATUS_ID}}',
+      'gtfs-rt':{
+         url:'https://mnorth.prod.acquia-sites.com/wse/gtfsrtwebapi/v1/gtfsrt/{{GTFS_RT_API_KEY}}/getfeed',
+         apiKey:''
+      }
+   },
+   static:{
+      img:{
+         icon:'/right-track/src/agency-mnr/static/img/icon.png'
+      }
+   }
 }
 ```
