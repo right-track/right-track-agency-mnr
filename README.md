@@ -84,7 +84,7 @@ where `config` is an Object containing the agency's configuration.
    },
    stationFeed:{
       stationURL:'http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID={{STATUS_ID}}',
-      'gtfsrt':{
+      gtfsrt:{
          url:'https://mnorth.prod.acquia-sites.com/wse/gtfsrtwebapi/v1/gtfsrt/{{GTFS_RT_API_KEY}}/getfeed',
          apiKey:''
       }
