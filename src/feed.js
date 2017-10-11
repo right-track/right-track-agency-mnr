@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * ### Agency StationFeed Provider
+ * ### Agency StationFeed Factory
  * This module provides the agency-specific implementation of building
  * the `StationFeed`.  It parses the agency-specific real-time data sources
  * and populates a `StationFeed` with `StationFeedDeparture`s that include
