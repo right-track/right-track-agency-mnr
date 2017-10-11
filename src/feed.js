@@ -1,14 +1,24 @@
 'use strict';
 
+/**
+ * ### Agency StationFeed Provider
+ * This module provides the agency-specific implementation of building
+ * the `StationFeed`.  It parses the agency-specific real-time data sources
+ * and populates a `StationFeed` with `StationFeedDeparture`s that include
+ * real-time status information (`StationFeedDepartureStatus`).
+ * @module feed
+ */
+
 const http = require('http');
 const parse = require('node-html-parser').parse;
 const cache = require('memory-cache');
 const core = require('right-track-core');
 const c = require('./config.js');
+
 const DateTime = core.utils.DateTime;
-const StationFeed = core.rt.StationFeed;
-const Departure = StationFeed.StationFeedDeparture;
-const Status = StationFeed.StationFeedDepartureStatus;
+const StationFeed = core.rt.StationFeed.StationFeed;
+const Departure = core.rt.StationFeed.StationFeedDeparture;
+const Status = core.rt.StationFeed.StationFeedDepartureStatus;
 
 
 // Amount of time (ms) to keep cached data
@@ -28,7 +38,10 @@ let DOWNLOAD_TIMEOUT = 7*1000;
  * This callback is performed after the Station Feed
  * for this agency has been built for the requested Stop.
  * @callback feedCallback
- * @param {Error} error Station Feed Error
+ * @param {Error} error Station Feed Error.  The Error's message will be
+ * a pipe (`|`) separated string in the format of: `Error Code|Error Type|Error Message`
+ * that will be parsed out by the **Right Track API Server** into a more specific
+ * error Response.
  * @param {StationFeed} [feed] The built Station Feed for the Stop
  */
 
@@ -37,7 +50,9 @@ let DOWNLOAD_TIMEOUT = 7*1000;
 // ===== REQUIRED STATION FEED FUNCTIONS ===== //
 
 /**
- * REQUIRED FUNCTION: get the requested Stop's Station Feed
+ * REQUIRED FUNCTION: get the requested Stop's `StationFeed`.  This function
+ * will load the agency's real-time status sources and populate a `StationFeed`
+ * with `StationFeedDeparture`s containing the real-time status information.
  * @param {RightTrackDB} db The Right Track DB to query GTFS data from
  * @param {Stop} origin Origin Stop
  * @param {feedCallback} callback Station Feed Callback
@@ -336,10 +351,10 @@ function _parseTrainTime(data, gtfsDelays, db, origin, callback) {
       let statusText = 'Scheduled';
       let remarks = undefined;
       if ( origin.statusId === '1' ) {
-        remarks = cells[3].rawText.replace(/^\s+|\s+$/g, '');;
+        remarks = cells[3].rawText.replace(/^\s+|\s+$/g, '');
       }
       else {
-        statusText = cells[3].rawText.replace(/^\s+|\s+$/g, '');;
+        statusText = cells[3].rawText.replace(/^\s+|\s+$/g, '');
       }
 
 

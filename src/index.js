@@ -2,7 +2,7 @@
 
 
 const config = require('./config.js');
-const feed = require('./stationFeed.js');
+const feed = require('./feed.js');
 
 
 
