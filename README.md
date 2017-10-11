@@ -1,9 +1,12 @@
 Metro North Railroad & SLE
 ==========================
 
-This module is an implementation of a _right-track-agency_ used to 
-extend the functionality of the [right-track-core](https://github.com/right-track/right-track-core) 
-module.
+#### node module: [right-track-agency-mnr](https://www.npmjs.com/package/right-track-agency-mnr)
+
+---
+
+This module is an implementation of a _right-track-agency_ used to add agency-specific 
+configuration and functionality to various [Right Track Projects](https://github.com/right-track).
 
 ### Features
 
@@ -12,8 +15,7 @@ This module provides the following agency-specific information:
 * The latest compiled Right Track Database for MNR
 * The archived Right Track Databases for MNR
 * Agency configuration properties to be used in various _Right Track_ projects
-* The functions to generate a MNR Station Feed for the 
-[right-track-server](https://github.com/right-track/right-track-server) 
+* The functions to generate a MNR Station Feed for the [right-track-server](https://github.com/right-track/right-track-server) 
 
 ### Configuration
 
