@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * ### Agency Configuration
+ * This module will read agency configuration files and provide the
+ * configuration properties.
+ * @module config
+ */
+
+
 const fs = require('fs');
 const path = require('path');
 const merge = require('deepmerge');
@@ -19,10 +27,9 @@ reset();
 
 
 /**
- * Read the configuration file from the specified path and merge its
- * properties with the default configuration file.
+ * Read the configuration file from the specified path and merge its properties
+ * with the default configuration file.
  * @param {string} location Path to agency config file (relative paths are relative to module root)
- * @alias config/read
  */
 function read(location) {
   if ( location !== undefined ) {
@@ -70,7 +77,6 @@ function read(location) {
 /**
  * Get the agency configuration variables
  * @returns {object} Agency config variables
- * @alias config/get
  */
 function get() {
   return CONFIG;
@@ -78,11 +84,8 @@ function get() {
 
 
 /**
- * Clear any saved config information and
- * reload the default configuration.  Any
- * previously added config files will have
- * to be read again.
- * @alias config/reset
+ * Clear any saved config information and reload the default configuration.  Any
+ * previously added config files will have to be read again.
  */
 function reset() {
   CONFIG = {};

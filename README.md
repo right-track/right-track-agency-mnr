@@ -38,7 +38,9 @@ be loaded relative to the directory this configuration file is located in.
 
 ```json
 {
-    "db_location": "/path/to/database.db"
+    "db": {
+        "location": "/path/to/database.db"    
+    }
 }
 ```
 
