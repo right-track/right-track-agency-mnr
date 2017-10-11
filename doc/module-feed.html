@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Global - Documentation</title>
+    <title>feed - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -22,12 +22,12 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-config.html">config</a><ul class='methods'><li data-type='method'><a href="module-config.html#~get">get</a></li><li data-type='method'><a href="module-config.html#~read">read</a></li><li data-type='method'><a href="module-config.html#~reset">reset</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#feed">feed</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-config.html">config</a><ul class='methods'><li data-type='method'><a href="module-config.html#~get">get</a></li><li data-type='method'><a href="module-config.html#~read">read</a></li><li data-type='method'><a href="module-config.html#~reset">reset</a></li></ul></li><li><a href="module-feed.html">feed</a><ul class='methods'><li data-type='method'><a href="module-feed.html#~feed">feed</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
     
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">feed</h1>
     
 
     
@@ -39,9 +39,8 @@
 
 <header>
     
-        <h2>
         
-        </h2>
+            
         
     
 </header>
@@ -50,9 +49,25 @@
     <div class="container-overview">
     
         
+            <div class="description"><h3>Agency StationFeed Provider</h3><p>This module provides the agency-specific implementation of building
+the <code>StationFeed</code>.  It parses the agency-specific real-time data sources
+and populates a <code>StationFeed</code> with <code>StationFeedDeparture</code>s that include
+real-time status information (<code>StationFeedDepartureStatus</code>).</p></div>
+        
+
+        
+            
+
+
+
 
 <dl class="details">
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="feed.js.html">feed.js</a>, <a href="feed.js.html#line3">line 3</a>
+    </li></ul></dd>
     
 
     
@@ -89,7 +104,30 @@
 
 
 
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
     
@@ -115,7 +153,7 @@
 
     
 
-    <h4 class="name" id="feed"><span class="type-signature"></span>feed<span class="signature">(db, origin, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~feed"><span class="type-signature">(inner) </span>feed<span class="signature">(db, origin, callback)</span><span class="type-signature"></span></h4>
 
     
 
@@ -127,7 +165,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="stationFeed.js.html">stationFeed.js</a>, <a href="stationFeed.js.html#line46">line 46</a>
+        <a href="feed.js.html">feed.js</a>, <a href="feed.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -167,7 +205,9 @@
 
 
 <div class="description">
-    <p>REQUIRED FUNCTION: get the requested Stop's Station Feed</p>
+    <p>REQUIRED FUNCTION: get the requested Stop's <code>StationFeed</code>.  This function
+will load the agency's real-time status sources and populate a <code>StationFeed</code>
+with <code>StationFeedDeparture</code>s containing the real-time status information.</p>
 </div>
 
 
@@ -257,7 +297,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="global.html#feedCallback">feedCallback</a></span>
+<span class="param-type">feedCallback</span>
 
 
             
@@ -300,7 +340,7 @@
 
     
 
-    <h4 class="name" id="feedCallback"><span class="type-signature"></span>feedCallback<span class="signature">(error, feed<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~feedCallback"><span class="type-signature"></span>feedCallback<span class="signature">(error, feed<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -312,7 +352,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="stationFeed.js.html">stationFeed.js</a>, <a href="stationFeed.js.html#line28">line 28</a>
+        <a href="feed.js.html">feed.js</a>, <a href="feed.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -417,7 +457,10 @@ for this agency has been built for the requested Stop.</p>
 
             
 
-            <td class="description last"><p>Station Feed Error</p></td>
+            <td class="description last"><p>Station Feed Error.  The Error's message will be
+a pipe (<code>|</code>) separated string in the format of: <code>Error Code|Error Type|Error Message</code>
+that will be parsed out by the <strong>Right Track API Server</strong> into a more specific
+error Response.</p></td>
         </tr>
 
     
@@ -488,7 +531,7 @@ for this agency has been built for the requested Stop.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 10 2017 20:49:35 GMT-0400 (EDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 10 2017 21:06:58 GMT-0400 (EDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
