@@ -150,6 +150,8 @@ function _getGTFSRT(callback) {
 function _updateGTFSRT(callback) {
   let config = c.get();
 
+  console.log(config);
+
   // Get URL parameters
   let apiKey = config.stationFeed.gtfsrt.apiKey;
   let url = config.stationFeed.gtfsrt.url.replace('{{GTFS_RT_API_KEY}}', apiKey);
