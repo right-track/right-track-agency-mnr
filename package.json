@@ -4,7 +4,6 @@
   "description": "Right Track Agency: Metro North Railroad (mnr)",
   "author": "David Waring <dev@davidwaring.net> (https://davidwaring.net)",
   "license": "MIT",
-  "private": true,
   "main": "src/index.js",
   "scripts": {
     "docs": "jsdoc -c jsdoc.json --readme README.md --template $NODE_PATH/docdash"

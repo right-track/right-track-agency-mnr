@@ -5,8 +5,8 @@ Metro North Railroad & SLE
 
 ---
 
-This module is an implementation of a _right-track-agency_ used to add agency-specific 
-configuration and functionality to various [Right Track Projects](https://github.com/right-track).
+This module is an implementation of a [right-track-agency](https://github.com/right-track/right-track-agency-abstract) 
+used to add agency-specific configuration and functionality to various [Right Track Projects](https://github.com/right-track).
 
 ### Features
 
