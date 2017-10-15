@@ -1,19 +1,10 @@
 'use strict';
 
-/**
- * ### Agency StationFeed Builder
- * This module provides the agency-specific implementation of building
- * the `StationFeed`.  It parses the agency-specific real-time data sources
- * and populates a `StationFeed` with `StationFeedDeparture`s that include
- * real-time status information (`StationFeedDepartureStatus`).
- * @module feed
- */
 
 const http = require('http');
 const parse = require('node-html-parser').parse;
 const cache = require('memory-cache');
 const core = require('right-track-core');
-const c = require('./config.js');
 
 const DateTime = core.utils.DateTime;
 const StationFeed = core.rt.StationFeed.StationFeed;
@@ -28,22 +19,8 @@ let CACHE_TIME = 60*1000;
 let DOWNLOAD_TIMEOUT = 7*1000;
 
 
-
-
-
-
-// ===== CALLBACK FUNCTIONS ===== //
-
-/**
- * This callback is performed after the Station Feed
- * for this agency has been built for the requested Stop.
- * @callback feedCallback
- * @param {Error} error Station Feed Error.  The Error's message will be
- * a pipe (`|`) separated string in the format of: `Error Code|Error Type|Error Message`
- * that will be parsed out by the **Right Track API Server** into a more specific
- * error Response.
- * @param {StationFeed} [feed] The built Station Feed for the Stop
- */
+// Agency Configuration
+let CONFIG = {};
 
 
 
@@ -55,9 +32,12 @@ let DOWNLOAD_TIMEOUT = 7*1000;
  * with `StationFeedDeparture`s containing the real-time status information.
  * @param {RightTrackDB} db The Right Track DB to query GTFS data from
  * @param {Stop} origin Origin Stop
- * @param {feedCallback} callback Station Feed Callback
+ * @param {Object} config Agency configuration
+ * @param {function} callback Station Feed Callback
+ * @private
  */
-function feed(db, origin, callback) {
+function feed(db, origin, config, callback) {
+  CONFIG = config;
 
   // Make sure we have a valid status id
   if ( origin.statusId === '-1' ) {
@@ -65,7 +45,6 @@ function feed(db, origin, callback) {
       new Error('4007|Unsupported Station|The Stop does not support real-time status information.')
     );
   }
-
 
   // Get GTFS-RT Delays
   _getGTFSRTforStop(origin.id, function(delays) {
@@ -148,13 +127,13 @@ function _getGTFSRT(callback) {
  * @private
  */
 function _updateGTFSRT(callback) {
-  let config = c.get();
 
-  console.log(config);
+  console.log("UPDATING GTFS-RT:");
+  console.log(CONFIG);
 
   // Get URL parameters
-  let apiKey = config.stationFeed.gtfsrt.apiKey;
-  let url = config.stationFeed.gtfsrt.url.replace('{{GTFS_RT_API_KEY}}', apiKey);
+  let apiKey = CONFIG.stationFeed.gtfsrt.apiKey;
+  let url = CONFIG.stationFeed.gtfsrt.url.replace('{{GTFS_RT_API_KEY}}', apiKey);
 
   // Download the URL
   _download(url, function(data) {
@@ -289,8 +268,7 @@ function _getTrainTime(delays, db, origin, callback) {
 function _updateTrainTime(delays, db, origin, callback) {
 
   // Get Station URL
-  let config = c.get();
-  let url = config.stationFeed.stationURL.replace('{{STATUS_ID}}', origin.statusId);
+  let url = CONFIG.stationFeed.stationURL.replace('{{STATUS_ID}}', origin.statusId);
 
   // Download the TrainTime Page...
   _download(url, function(data) {

@@ -1,24 +1,33 @@
 'use strict';
 
+const RightTrackAgency = require('right-track-agency');
+const feed = require('./feed.js');
+
+const moduleDirectory = __dirname + "/../";
+
+
 /**
- * ### Right Track Agency: Metro North Railroad & SLE
- * This module contains agency-specific configuration and functions
- * for Metro North Railroad & Shore Line East
- * @module /
+ * RightTrackAgency implementation for Metro North Railroad & SLE.
+ *
+ * See the Right Track Agency project ({@link https://github.com/right-track/right-track-agency})
+ * for more information.
+ * @class
  */
+class MNR extends RightTrackAgency {
+
+  /**
+   * Create a new RightTrackAgency for Metro North Railroad & SLE
+   */
+  constructor() {
+    super(moduleDirectory);
+  }
+
+  loadFeed(db, origin, callback) {
+    return feed(db, origin, this.config, callback);
+  }
+
+}
+
 
 // Export functions
-module.exports = {
-
-  /**
-   * Agency Configuration
-   * @see module:config
-   */
-  config: require('./config.js'),
-
-  /**
-   * Agency Station Feed
-   * @see module:feed
-   */
-  feed: require('./feed.js')
-};
+module.exports = new MNR();
