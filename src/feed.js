@@ -1,6 +1,5 @@
 'use strict';
 
-
 const http = require('http');
 const parse = require('node-html-parser').parse;
 const cache = require('memory-cache');
@@ -18,18 +17,14 @@ let CACHE_TIME = 60*1000;
 // Amount of time (ms) for download to timeout
 let DOWNLOAD_TIMEOUT = 7*1000;
 
-
 // Agency Configuration
 let CONFIG = {};
 
 
-
-// ===== REQUIRED STATION FEED FUNCTIONS ===== //
-
 /**
- * REQUIRED FUNCTION: get the requested Stop's `StationFeed`.  This function
- * will load the agency's real-time status sources and populate a `StationFeed`
- * with `StationFeedDeparture`s containing the real-time status information.
+ * Get the requested Stop's `StationFeed`.  This function will load the agency's
+ * real-time status sources and populate a `StationFeed` with `StationFeedDeparture`s
+ * containing the real-time status information.
  * @param {RightTrackDB} db The Right Track DB to query GTFS data from
  * @param {Stop} origin Origin Stop
  * @param {Object} config Agency configuration
@@ -47,13 +42,13 @@ function feed(db, origin, config, callback) {
   }
 
   // Get GTFS-RT Delays
-  _getGTFSRTforStop(origin.id, function(delays) {
+  _getGTFSRTforStop(origin.id, function(updates) {
 
-    console.log("GTFS-RT DELAYS FOR " + origin.name + ":");
-    console.log(delays);
+    console.log("GTFS-RT TRIP UPDATES FOR " + origin.name + ":");
+    console.log(updates);
 
     // Get TrainTime data and build list of Departures
-    _getTrainTime(delays, db, origin, function(err, updated, departures) {
+    _getTrainTime(db, origin, updates, function(err, updated, departures) {
 
       // Station Feed Error
       if ( err ) {
@@ -127,9 +122,6 @@ function _getGTFSRT(callback) {
  * @private
  */
 function _updateGTFSRT(callback) {
-
-  console.log("UPDATING GTFS-RT:");
-  console.log(CONFIG);
 
   // Get URL parameters
   let apiKey = CONFIG.stationFeed.gtfsrt.apiKey;
@@ -237,13 +229,13 @@ function _parseGTFSRT(data, callback) {
  * Get the Train Time data for the specified Stop.  This will first check
  * to see if there is cached data for the Stop.  If there is no cached data
  * it will get fresh data from the TrainTime website.
- * @param {Object} delays GTFS RT delays for this Stop
  * @param {RightTrackDB} db Right Track DB to query
  * @param {Stop} origin Origin Stop
+ * @param {Object} updates GTFS RT delays for this Stop
  * @param callback List of StationFeedDepartures
  * @private
  */
-function _getTrainTime(delays, db, origin, callback) {
+function _getTrainTime(db, origin, updates, callback) {
 
   // Check cache for data
   let data = cache.get('TT-' + origin.id);
@@ -252,20 +244,20 @@ function _getTrainTime(delays, db, origin, callback) {
   }
 
   // Get fresh data
-  _updateTrainTime(delays, db, origin, callback);
+  _updateTrainTime(db, origin, updates, callback);
 
 }
 
 
 /**
  * Download fresh TrainTime data from the source website for the specified Stop.
- * @param {Object} delays GTFS RT delays for this Stop
  * @param {RightTrackDB} db Right Track DB to query
  * @param {Stop} origin Origin Stop
+ * @param {Object} updates GTFS RT delays for this Stop
  * @param callback List of StationFeedDepartures
  * @private
  */
-function _updateTrainTime(delays, db, origin, callback) {
+function _updateTrainTime(db, origin, updates, callback) {
 
   // Get Station URL
   let url = CONFIG.stationFeed.stationURL.replace('{{STATUS_ID}}', origin.statusId);
@@ -274,7 +266,7 @@ function _updateTrainTime(delays, db, origin, callback) {
   _download(url, function(data) {
 
     // Parse the TrainTime Page...
-    _parseTrainTime(data, delays, db, origin, callback);
+    _parseTrainTime(db, origin, data, updates, callback);
 
   });
 
@@ -283,14 +275,14 @@ function _updateTrainTime(delays, db, origin, callback) {
 
 /**
  * Parse the MTA Metro North TrainTime Page
- * @param {string} data The TrainTime page data
- * @param {Object} gtfsDelays The GTFS-RT delays
  * @param {RightTrackDB} db The Right Track DB to query GTFS data from
  * @param {Stop} origin Origin Stop
+ * @param {string} data The TrainTime page data
+ * @param {Object} gtfsUpdates The GTFS-RT trip updates
  * @param callback Callback function accepting the Station Feed
  * @private
  */
-function _parseTrainTime(data, gtfsDelays, db, origin, callback) {
+function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
 
   // List of departures to return
   let DEPARTURES = [];
@@ -377,10 +369,10 @@ function _parseTrainTime(data, gtfsDelays, db, origin, callback) {
 
 
           // See if there's a match in the GTFS-RT delays
-          if ( trip !== undefined && gtfsDelays !== undefined ) {
-            for ( let i = 0; i < gtfsDelays.length; i++ ) {
-              if ( gtfsDelays[i].trip === trip.shortName ) {
-                let gtfsDelay = gtfsDelays[i].delay;
+          if ( trip !== undefined && gtfsUpdates !== undefined ) {
+            for ( let i = 0; i < gtfsUpdates.length; i++ ) {
+              if ( gtfsUpdates[i].trip === trip.shortName ) {
+                let gtfsDelay = gtfsUpdates[i].delay;
 
                 // No Delays, set status to On Time
                 if ( delay === 0 && gtfsDelay === 0 ) {
