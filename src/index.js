@@ -7,19 +7,24 @@ const moduleDirectory = __dirname + "/../";
 
 
 /**
- * RightTrackAgency implementation for Metro North Railroad & SLE.
+ * `RightTrackAgency` implementation for **Metro North Railroad & SLE**.
  *
- * See the Right Track Agency project ({@link https://github.com/right-track/right-track-agency})
- * for more information.
+ * For more information, see:
+ * - Right Track Agency project ({@link https://github.com/right-track/right-track-agency})
+ * - Right Track Agency documentation ({@link https://docs.righttrack.io/right-track-agency})
  * @class
  */
 class MNR extends RightTrackAgency {
 
   /**
-   * Create a new RightTrackAgency for Metro North Railroad & SLE
+   * Create a new `RightTrackAgency` for Metro North Railroad & SLE
    */
   constructor() {
     super(moduleDirectory);
+  }
+
+  isFeedSupported() {
+    return true;
   }
 
   loadFeed(db, origin, callback) {
