@@ -1,7 +1,8 @@
 Metro North Railroad & SLE
 ==========================
 
-#### node module: [right-track-agency-mnr](https://www.npmjs.com/package/right-track-agency-mnr)
+**node module:** [right-track-agency-mnr](https://www.npmjs.com/package/right-track-agency-mnr)  
+**GitHub repo:** [right-track/right-track-agency-mnr](https://github.com/right-track/right-track-agency-mnr)
 
 ---
 
