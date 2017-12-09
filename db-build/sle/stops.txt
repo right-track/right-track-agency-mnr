@@ -1,0 +1,8 @@
+stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station,wheelchair_accessible
+55502,,Branford (SLE),,41.274589,-72.817265,,http://as0.mta.info/mnr/stations/station_detail.cfm?key=,0,,0
+55504,,Guilford (SLE),,41.275839,-72.673638,,http://as0.mta.info/mnr/stations/station_detail.cfm?key=,0,,0
+55506,,Madison (SLE),,41.283676,-72.599545,,http://as0.mta.info/mnr/stations/station_detail.cfm?key=,0,,0
+55508,,Clinton (SLE),,41.2795,-72.528305,,http://as0.mta.info/mnr/stations/station_detail.cfm?key=,0,,0
+55510,,Westbrook (SLE),,41.288787,-72.44845,,http://as0.mta.info/mnr/stations/station_detail.cfm?key=,0,,0
+55512,,Old Saybrook (SLE),,41.300395,-72.376792,,http://as0.mta.info/mnr/stations/station_detail.cfm?key=,0,,0
+55514,,New London (SLE),,41.354222,-72.093229,,http://as0.mta.info/mnr/stations/station_detail.cfm?key=,0,,0

@@ -1,0 +1,5 @@
+service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+SLE_WEEKDAY,1,1,1,1,1,0,0,20170101,20171231
+SLE_WEEKEND,0,0,0,0,0,1,1,20170101,20171231
+SLE_FRIDAYS,0,0,0,0,1,0,0,20170101,20171231
+SLE_WEEKEND_PLUS,0,0,0,0,0,0,0,20170101,20171231
