@@ -1,0 +1,120 @@
+stop_id,status_id,display_name,zone_id
+168,-1,Ansonia,51
+99,99,Appalachian Trail,8
+24,24,Ardsley-on-Hudson,4
+46,46,Beacon,8
+170,-1,Beacon Falls,51
+85,85,Bedford Hills,6
+164,-1,Bethel,42
+57,57,Botanical Garden,2
+162,-1,Branchville,42
+55502,-1,Branford (SLE),22
+44,44,Breakneck Ridge,7
+91,91,Brewster,7
+140,140,Bridgeport,19
+65,65,Bronxville,3
+161,-1,Cannondale,41
+83,83,Chappaqua,5
+55508,-1,Clinton (SLE),23
+43,43,Cold Spring,7
+37,37,Cortlandt,6
+118,118,Cos Cob,15
+68,68,Crestwood,3
+90,90,Croton Falls,7
+33,33,Croton-Harmon,5
+165,-1,Danbury,42
+128,128,Darien,16
+167,-1,Derby,51
+23,23,Dobbs Ferry,4
+101,101,Dover Plains,9
+133,133,East Norwalk,17
+138,138,Fairfield,18
+188,188,Fairfield Metro,18
+64,64,Fleetwood,3
+56,56,Fordham,2
+42,42,Garrison,7
+153,153,Glenbrook,31
+19,19,Glenwood,3
+88,88,Goldens Bridge,6
+1,1,Grand Central Terminal,1
+136,136,Greens Farms,18
+116,116,Greenwich,15
+20,20,Greystone,3
+55504,-1,Guilford (SLE),22
+100,100,Harlem Valley - Wingdale,9
+4,4,Harlem-125th Street,1
+112,112,Harrison,13
+72,72,Hartsdale,4
+22,22,Hastings-on-Hudson,4
+80,80,Hawthorne,5
+25,25,Irvington,4
+86,86,Katonah,6
+110,110,Larchmont,13
+17,17,Ludlow,3
+55506,-1,Madison (SLE),22
+111,111,Mamaroneck,13
+40,40,Manitou,7
+11,11,Marble Hill,2
+54,54,Melrose,2
+158,-1,Merritt 7,41
+145,145,Milford,20
+9,9,Morris Heights,2
+84,84,Mount Kisco,6
+79,79,Mount Pleasant,5
+105,105,Mount Vernon East,12
+62,62,Mount Vernon West,3
+171,-1,Naugatuck,51
+157,157,New Canaan,31
+49,49,New Hamburg,8
+149,149,New Haven,21
+151,-1,New Haven-State St.,21
+55514,-1,New London (SLE),24
+108,108,New Rochelle,12
+127,127,Noroton Heights,16
+76,76,North White Plains,4
+121,121,Old Greenwich,15
+55512,-1,Old Saybrook (SLE),23
+31,31,Ossining,5
+97,97,Patterson,8
+98,98,Pawling,8
+39,39,Peekskill,6
+106,106,Pelham,12
+29,29,Philipse Manor,5
+81,81,Pleasantville,5
+115,115,Port Chester,14
+51,51,Poughkeepsie,9
+89,89,Purdys,7
+163,-1,Redding,42
+16,16,Riverdale,2
+120,120,Riverside,15
+129,129,Rowayton,16
+114,114,Rye,14
+30,30,Scarborough,5
+71,71,Scarsdale,4
+169,-1,Seymour,51
+131,131,South Norwalk,17
+94,94,Southeast,7
+137,137,Southport,18
+154,154,Springdale,31
+14,14,Spuyten Duyvil,2
+124,124,Stamford,16
+143,143,Stratford,20
+155,155,Talmadge Hill,31
+27,27,Tarrytown,5
+176,176,Tenmile River,10
+55,55,Tremont,2
+66,66,Tuckahoe,3
+10,10,University Heights,2
+78,78,Valhalla,5
+61,61,Wakefield,2
+177,177,Wassaic,10
+172,-1,Waterbury,51
+190,190,West Haven,21
+55510,-1,Westbrook (SLE),23
+134,134,Westport,18
+74,74,White Plains,4
+58,58,Williams Bridge,2
+160,-1,Wilton,41
+59,59,Woodlawn,2
+622,622,Yankees - E153rd Street,2
+18,18,Yonkers,3
