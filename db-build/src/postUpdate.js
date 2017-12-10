@@ -12,6 +12,7 @@ const MNR_DIR = '../gtfs/';
 /**
  * MNR Post-Update Script
  * This script appends the SLE data tables to the MNR data tables
+ * @private
  */
 function postUpdate(agencyOptions, callback) {
 
