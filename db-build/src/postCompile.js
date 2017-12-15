@@ -37,7 +37,8 @@ function postCompile(agencyOptions, db, callback) {
       console.log("    ... Removing unused stops");
       db.exec("DELETE FROM gtfs_stops WHERE stop_id IN ('40001', '40002', " +
         "'502', '504', '505', '506', '507', '508', '510', '512', '514', '516', '518', " +
-        "'602', '604', '606', '608', '610', '612', '614', '616', '618', '620');");
+        "'602', '604', '606', '608', '610', '612', '614', '616', '618', '620', " +
+        "'40702', '40704', '40706', '40708', '40710', '40712', '40714');");
 
       // Set direction descriptions
       console.log("    ... Setting direction descriptions");
