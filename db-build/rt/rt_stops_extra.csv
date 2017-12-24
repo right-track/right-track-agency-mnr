@@ -8,14 +8,14 @@ stop_id,status_id,display_name,zone_id
 164,-1,Bethel,42
 57,57,Botanical Garden,2
 162,-1,Branchville,42
-55502,-1,Branford (SLE),22
+1111,-1,Branford (SLE),22
 44,44,Breakneck Ridge,7
 91,91,Brewster,7
 140,140,Bridgeport,19
 65,65,Bronxville,3
 161,-1,Cannondale,41
 83,83,Chappaqua,5
-55508,-1,Clinton (SLE),23
+1114,-1,Clinton (SLE),23
 43,43,Cold Spring,7
 37,37,Cortlandt,6
 118,118,Cos Cob,15
@@ -40,7 +40,7 @@ stop_id,status_id,display_name,zone_id
 136,136,Greens Farms,18
 116,116,Greenwich,15
 20,20,Greystone,3
-55504,-1,Guilford (SLE),22
+1112,-1,Guilford (SLE),22
 100,100,Harlem Valley - Wingdale,9
 4,4,Harlem-125th Street,1
 112,112,Harrison,13
@@ -51,7 +51,7 @@ stop_id,status_id,display_name,zone_id
 86,86,Katonah,6
 110,110,Larchmont,13
 17,17,Ludlow,3
-55506,-1,Madison (SLE),22
+1113,-1,Madison (SLE),22
 111,111,Mamaroneck,13
 40,40,Manitou,7
 11,11,Marble Hill,2
@@ -68,12 +68,12 @@ stop_id,status_id,display_name,zone_id
 49,49,New Hamburg,8
 149,149,New Haven,21
 151,-1,New Haven-State St.,21
-55514,-1,New London (SLE),24
+1117,-1,New London (SLE),24
 108,108,New Rochelle,12
 127,127,Noroton Heights,16
 76,76,North White Plains,4
 121,121,Old Greenwich,15
-55512,-1,Old Saybrook (SLE),23
+1116,-1,Old Saybrook (SLE),23
 31,31,Ossining,5
 97,97,Patterson,8
 98,98,Pawling,8
@@ -110,7 +110,7 @@ stop_id,status_id,display_name,zone_id
 177,177,Wassaic,10
 172,-1,Waterbury,51
 190,190,West Haven,21
-55510,-1,Westbrook (SLE),23
+1115,-1,Westbrook (SLE),23
 134,134,Westport,18
 74,74,White Plains,4
 58,58,Williams Bridge,2
