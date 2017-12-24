@@ -100,8 +100,7 @@ function postCompile(agencyOptions, db, callback) {
       db.exec("UPDATE gtfs_stop_times SET pickup_type=0, drop_off_type=0 WHERE stop_id <> 4 AND stop_id <> 56 AND stop_id <> 74 AND stop_id <> 33;");
 
       db.exec("COMMIT", function() {
-        console.log("    ... Rebuilding RT Route Graph ...");
-        rg(db, agencyOptions, callback);
+        return callback();
       });
     });
 
