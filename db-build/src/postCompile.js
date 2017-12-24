@@ -101,9 +101,7 @@ function postCompile(agencyOptions, db, callback) {
 
       db.exec("COMMIT", function() {
         console.log("    ... Rebuilding RT Route Graph ...");
-        rg(db, agencyOptions, function() {
-          return callback();
-        });
+        rg(db, agencyOptions, callback);
       });
     });
 
