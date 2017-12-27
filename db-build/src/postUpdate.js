@@ -47,6 +47,12 @@ function postUpdate(agencyOptions, callback) {
     }
     
   }
+
+  // Return when no GTFS update
+  else {
+    return callback();
+  }
+
 }
 
 
