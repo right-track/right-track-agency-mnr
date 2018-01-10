@@ -13,8 +13,9 @@ used to add agency-specific configuration and functionality to various [Right Tr
 
 This module provides the following agency-specific information:
 
+* Build Scripts for creating a Right Track Database for MNR (using the [right-track-db-build](https://github.com/right-track/right-track-db-build) project)
 * The latest compiled Right Track Database for MNR
-* The archived Right Track Databases for MNR
+* The archived Right Track Databases for MNR (in the git repo)
 * Agency configuration properties to be used in various _Right Track_ projects
 * The functions to generate a MNR Station Feed for the [right-track-server](https://github.com/right-track/right-track-server) 
 
@@ -35,6 +36,11 @@ On `require` the module will return a new instance of the **Metro North Railroad
 To get the agency configuration properties:
 ```javascript
 const MNR = require('right-track-agency-mnr');
+
+// Optionally load an additional configuration file
+MNR.readConfig('/path/to/config.json');
+
+// Get the merged configuration
 let config = MNR.getConfig();
 ``` 
 
@@ -43,9 +49,6 @@ To get the real-time `StationFeed` for Grand Central Terminal:
 const core = require('right-track-core');
 const RightTrackDB = require('right-track-db-sqlite3');
 const MNR = require('right-track-agency-mnr');
-
-// Get the Metro North configuration properties
-let config = MNR.getConfig();
 
 // Set up the Right Track DB for Metro North
 let db = new RightTrackDB(MNR);
