@@ -44,9 +44,6 @@ function feed(db, origin, config, callback) {
   // Get GTFS-RT Delays
   _getGTFSRTforStop(origin.id, function(updates) {
 
-    console.log("GTFS-RT TRIP UPDATES FOR " + origin.name + ":");
-    console.log(updates);
-
     // Get TrainTime data and build list of Departures
     _getTrainTime(db, origin, updates, function(err, updated, departures) {
 
@@ -342,11 +339,16 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
           toParse = toParse.toLowerCase();
           toParse = toParse.replace('late', '');
           toParse = toParse.replace('\"', '');
+          toParse = toParse.replace('min', '');
           delay = parseInt(toParse);
 
-          statusText = "Late " + delay;
+          if ( !isNaN(delay) ) {
+            statusText = "Late " + delay;
+          }
         }
         catch (err) {
+          delay = 0;
+          statusText = "Late";
         }
       }
 
