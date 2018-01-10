@@ -331,8 +331,7 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
 
 
       // Create Date/Time from Departure
-      let date = DateTime.now().getDateInt();
-      let dep = DateTime.create(time, date);
+      let dep = DateTime.createFromTime(time, true);
 
 
       // Parse the Delay Time
@@ -398,8 +397,7 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
 
 
           // Add Delay Time to estimated departure
-          let estDeparture = DateTime.create(time, date);
-          estDeparture.deltaMins(delay);
+          let estDeparture = dep.clone().deltaMins(delay);
 
 
           // Build the Status
