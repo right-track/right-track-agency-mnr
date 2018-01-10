@@ -82,8 +82,8 @@ function postCompile(agencyOptions, db, callback) {
       db.exec("UPDATE gtfs_stops SET stop_id='1117' WHERE stop_id='NLC';");
 
       // Set SLE Trip Directions
-      db.exec("UPDATE gtfs_trips SET direction_id=0 WHERE trip_headsign IN ('To New London', 'To Old Saybrook');");
-      db.exec("UPDATE gtfs_trips SET direction_id=1 WHERE trip_headsign IN ('To New Haven Union Station', 'To Stamford');");
+      db.exec("UPDATE gtfs_trips SET direction_id=0 WHERE route_id='SLE' AND trip_headsign IN ('To New London', 'To Old Saybrook');");
+      db.exec("UPDATE gtfs_trips SET direction_id=1 WHERE route_id='SLE' AND trip_headsign IN ('To New Haven Union Station', 'To Stamford');");
 
       // Set SLE Trip Short Names
       console.log("    ... Setting SLE Trip Short Names");
