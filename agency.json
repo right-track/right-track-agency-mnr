@@ -28,7 +28,7 @@
   "colors": {
     "primary": "#c62828",
     "primaryText": "#dddddd",
-    "secondary": "#ffd54f",
-    "secondaryText": "#2e2e2e"
+    "secondary": "#263238",
+    "secondaryText": "#dddddd"
   }
 }
