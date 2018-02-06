@@ -353,6 +353,14 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
       }
 
 
+      // Parse Remarks
+      if ( remarks !== undefined ) {
+        remarks = remarks.replace("YANKEES", "Yankees");
+        remarks = remarks.replace("New Canaan,Waterbury,&SLE", "New Canaan, Waterbury & SLE");
+        remarks = remarks.replace("New Canaan, Danbury,SLE,", "New Canaan, Danbury & SLE");
+      }
+
+
 
 
       // Get Destination Stop from Destination Name
