@@ -1,2 +1,0 @@
-agency_id, agency_name,agency_url,agency_timezone,agency_phone,agency_lang
-SLE,Shore Line East,http://www.shorelineeast.com/,America/New_York,1-877-287-4337,en
