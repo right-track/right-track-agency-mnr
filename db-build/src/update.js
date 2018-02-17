@@ -22,11 +22,15 @@ const GTFS_DIR_SLE = "./db-build/sle";
 function update(agencyOptions, log, errors, callback) {
   log("    Checking for MNR & SLE GTFS data updates...");
 
+  // Get force flag
+  let force = agencyOptions.update;
+
+
   // Check the SLE GTFS
   log("    ==== GTFS SOURCE: SLE ====");
   let url_sle  = agencyOptions.agency.config.build.updateURL_SLE;
   let dir_sle = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_SLE);
-  _runUpdate(url_sle, dir_sle, agencyOptions.update, log, errors, function(update_sle, success_sle) {
+  _runUpdate(url_sle, dir_sle, force, log, errors, function(update_sle, success_sle) {
 
 
 
@@ -34,7 +38,7 @@ function update(agencyOptions, log, errors, callback) {
     log("    ==== GTFS SOURCE: MNR ====");
     let url_mnr  = agencyOptions.agency.config.build.updateURL_MNR;
     let dir_mnr = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_MNR);
-    _runUpdate(url_mnr, dir_mnr, agencyOptions.update || success_sle, log, errors, function(update_mnr, success_mnr) {
+    _runUpdate(url_mnr, dir_mnr, force || success_sle, log, errors, function(update_mnr, success_mnr) {
 
 
       // Set published
@@ -74,7 +78,7 @@ function update(agencyOptions, log, errors, callback) {
 
       // RETURN WITH THE UPDATE AND SUCCESS FLAGS
       let success = ((update_mnr && success_mnr) || !update_mnr) && ((update_sle && success_sle) || !update_sle);
-      return callback(update_mnr || update_sle, success, published, notes);
+      return callback(force || update_mnr || update_sle, success, published, notes);
 
 
     });
