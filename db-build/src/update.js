@@ -22,22 +22,59 @@ const GTFS_DIR_SLE = "./db-build/sle";
 function update(agencyOptions, log, errors, callback) {
   log("    Checking for MNR & SLE GTFS data updates...");
 
-  // Check the MNR GTFS
-  log("    ==== GTFS SOURCE: MNR ====");
-  let url_mnr  = agencyOptions.agency.config.build.updateURL_MNR;
-  let dir_mnr = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_MNR);
-  _runUpdate(url_mnr, dir_mnr, agencyOptions.update, log, errors, function(update_mnr, success_mnr) {
+  // Check the SLE GTFS
+  log("    ==== GTFS SOURCE: SLE ====");
+  let url_sle  = agencyOptions.agency.config.build.updateURL_SLE;
+  let dir_sle = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_SLE);
+  _runUpdate(url_sle, dir_sle, agencyOptions.update, log, errors, function(update_sle, success_sle) {
 
 
-    // Check the SLE GTFS
-    log("    ==== GTFS SOURCE: SLE ====");
-    let url_sle  = agencyOptions.agency.config.build.updateURL_SLE;
-    let dir_sle = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_SLE);
-    _runUpdate(url_sle, dir_sle, agencyOptions.update, log, errors, function(update_sle, success_sle) {
+
+    // Check the MNR GTFS
+    log("    ==== GTFS SOURCE: MNR ====");
+    let url_mnr  = agencyOptions.agency.config.build.updateURL_MNR;
+    let dir_mnr = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_MNR);
+    _runUpdate(url_mnr, dir_mnr, agencyOptions.update || success_sle, log, errors, function(update_mnr, success_mnr) {
+
+
+      // Set published
+      let published = undefined;
+      if ( (!update_mnr || !success_mnr) && (update_sle && success_sle) ) {
+        published = new Date(
+          fs.readFileSync(
+            path.normalize(
+              agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_SLE + "/published.txt"
+            )
+          ).toString()
+        );
+      }
+      else {
+        published = new Date(
+          fs.readFileSync(
+            path.normalize(
+              agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_MNR + "/published.txt"
+            )
+          ).toString()
+        );
+      }
+
+      // Set notes
+      let now = new Date();
+      let notes = "This schedule database was automatically compiled on " + now.toLocaleString();
+      if ( update_mnr && success_mnr && update_sle && success_sle ) {
+        notes += " due to a schedule data update from Metro North Railroad and Shore Line East.";
+      }
+      else if ( update_mnr && success_mnr ) {
+        notes += " due to a schedule data update from Metro North Railroad.";
+      }
+      else if ( update_sle && success_sle ) {
+        notes += " due to a schedule data update from Shore Line East.";
+      }
 
 
       // RETURN WITH THE UPDATE AND SUCCESS FLAGS
-      return callback(update_mnr || update_sle, success_mnr && success_sle);
+      let success = ((update_mnr && success_mnr) || !update_mnr) && ((update_sle && success_sle) || !update_sle);
+      return callback(update_mnr || update_sle, success, published, notes);
 
 
     });
@@ -66,20 +103,20 @@ function _runUpdate(url, dir, force, log, errors, callback) {
   _checkForUpdate(url, dir, log, errors, function(update) {
     log("       GTFS Update: " + update);
 
-    // Download and Install files, if an update is required
+    // Download and Install files, if an update is required or requested
     if ( update || force ) {
       _updateFiles(url, dir, log, errors, function(success) {
         log("       Install Success: " + success);
 
         // Return update and install status
-        return callback(update || force, success);
+        return callback(update, success);
 
       });
     }
 
     // No update...
     else {
-      return callback(false, true);
+      return callback(false, false);
     }
 
   });
