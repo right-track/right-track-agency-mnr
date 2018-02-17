@@ -24,9 +24,13 @@ const FILES = [
 /**
  * MNR Post-Update Script
  * This script appends the SLE data tables to the MNR data tables
+ * @param agencyOptions Agency Options
+ * @param log DB-Build Log
+ * @param errors DB-Build errors
+ * @param callback Callback function
  * @private
  */
-function postUpdate(agencyOptions, callback) {
+function postUpdate(agencyOptions, log, errors, callback) {
 
   // Run when the GTFS data was updated
   if ( agencyOptions.updateComplete === true ) {
