@@ -19,6 +19,9 @@
   "devDependencies": {
     "jsdoc": "^3.5.5"
   },
+  "peerDependencies": {
+    "decompress-zip": "^0.3.0"
+  },
   "homepage": "https://righttrack.io",
   "repository": {
     "type": "git",
