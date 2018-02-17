@@ -1,7 +1,5 @@
 'use strict';
 
-const rg = require('right-track-db-build/src/compile/rt/7-rt_route_graph.js');
-
 /**
  * MNR Post-Compile Script
  * This script performs the MNR-specific Database fixes
@@ -99,9 +97,12 @@ function postCompile(agencyOptions, db, callback) {
       console.log("    ... Fixing pickup/drop-off types");
       db.exec("UPDATE gtfs_stop_times SET pickup_type=0, drop_off_type=0 WHERE stop_id <> 4 AND stop_id <> 56 AND stop_id <> 74 AND stop_id <> 33;");
 
+      // Add SLE Route Graph Entries
+      console.log("    ... Adding SLE to rt_route_graph");
+      db.exec("INSERT INTO rt_route_graph (direction_id, stop1_id, stop2_id) VALUES (0,'149','1112'), (0,'1112','1115'), (0,'1115','1116'), (0,'1116','1117'), (0,'151','1111'), (0,'1111','1112'), (0,'1112','1113'), (0,'1113','1114'), (0,'1114','1115'), (1,'1116','1115'), (1,'1115','1114'), (1,'1114','1113'), (1,'1113','1112'), (1,'1112','1111'), (1,'1111','151'), (1,'1117','1116'), (1,'1115','1112'), (1,'1112','149'), (0,'149','1116'), (1,'1117','149'), (1,'1112','151'), (1,'1116','149');");
+      
       db.exec("COMMIT", function() {
-        console.log("    ... Rebuilding RT Route Graph ...");
-        rg(db, agencyOptions, callback);
+        return callback();
       });
     });
 
