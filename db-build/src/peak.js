@@ -8,6 +8,9 @@ const DateTime = core.utils.DateTime;
 // All Times relative to Arrivals/Departures from GCT
 const GCT_STOP_ID = '1';
 
+// List of Holidays with no Peak Service
+const HOLIDAYS = [20180115, 20180219];
+
 // SET TIME SECONDS
 const FIVE_AM = 18000;          // 5:00 AM
 const FIVE_THIRTY_AM = 19800;   // 5:30 AM
@@ -22,7 +25,7 @@ const EIGHT_PM = 72000;         // 8:00 PM
  * @param {Object} db SQLite Database
  * @param {string} tripId The GTFS Trip ID
  * @param {function} callback Callback function
- * @param {boolean} callback.peak Trip peak status
+ * @param {int} callback.peak Trip peak status
  */
 function peak(db, tripId, callback) {
 
@@ -33,18 +36,25 @@ function peak(db, tripId, callback) {
     if ( gct ) {
 
 
-      // Check if the Trip operates on a weekday
-      _operatesOnWeekday(db, tripId, function(weekday) {
+      // Get the Days of the Week the Trip operates on
+      _getDOWCode(db, tripId, function(dow) {
 
         // Operates on Weekday...
-        if ( weekday ) {
+        if ( dow > 0 ) {
 
 
           // Check if the Trip operates during peak times
-          _isPeak(db, tripId, function(peak) {
+          _operatesDuringPeak(db, tripId, function(peak) {
 
-            // Return the Peak Status
-            return callback(peak);
+            // Could be Peak...
+            if ( peak ) {
+              return callback(dow);
+            }
+
+            // Does not operate during peak times...
+            else {
+              return callback(0);
+            }
 
           });
 
@@ -52,7 +62,7 @@ function peak(db, tripId, callback) {
 
         // Does not Operate on Weekday...
         else {
-          return callback(false);
+          return callback(0);
         }
 
       });
@@ -61,7 +71,7 @@ function peak(db, tripId, callback) {
 
     // Does not Stop at GCT...
     else {
-      return callback(false)
+      return callback(0)
     }
 
   });
@@ -90,13 +100,21 @@ function _stopsAtGrandCentral(db, tripId, callback) {
 }
 
 /**
- * Check if the Trip ever operates on a weekday
- * @param db SQLite Database
- * @param tripId GTFS Trip ID
- * @param callback Callback function(boolean)
+ * Check which Days of the Week the Trip operates on
+ * @param {object} db SQLite Database
+ * @param {string} tripId GTFS Trip ID
+ * @param {function} callback Callback function(int)
+ * @param {int} callback.weekday
+ *    0 = just weekend
+ *    1 = just weekday
+ *    2 = mixed weekend and weekday
  * @private
  */
-function _operatesOnWeekday(db, tripId, callback) {
+function _getDOWCode(db, tripId, callback) {
+
+  // DOW Flags
+  let weekday = false;
+  let weekend = false;
 
   // Check default weekday status
   let select = "SELECT monday, tuesday, wednesday, thursday, friday, saturday, sunday " +
@@ -106,16 +124,18 @@ function _operatesOnWeekday(db, tripId, callback) {
   // Run Query
   db.get(select, function(err, row) {
     if ( err ) {
-      return callback(false);
+      return _finish();
     }
 
-    // Weekday Flag
-    let weekday = false;
-
     // Check Default Weekday
-    if ( row.monday === 1 || row.tuesday === 1 || row.wednesday === 1 ||
-          row.thursday === 1 || row.friday === 1 ) {
-      weekday = true;
+    if ( row ) {
+      if ( row.monday === 1 || row.tuesday === 1 || row.wednesday === 1 ||
+        row.thursday === 1 || row.friday === 1 ) {
+        weekday = true;
+      }
+      if ( row.saturday === 1 || row.sunday === 1  ) {
+        weekend = true;
+      }
     }
 
 
@@ -127,24 +147,52 @@ function _operatesOnWeekday(db, tripId, callback) {
     // Run Query
     db.all(select, function(err, rows) {
       if ( err ) {
-        return callback(weekday);
+        return _finish();
       }
 
       // Parse the dates
       for ( let i = 0; i < rows.length; i++ ) {
         let date = rows[i].date;
-        let dow = DateTime.createFromDate(date).getDateDOW();
-        if ( dow !== "saturday" && dow !== "sunday" ) {
-          weekday = true;
+
+        // Skip Holidays
+        if ( !HOLIDAYS.includes(date) ) {
+          let dow = DateTime.createFromDate(date).getDateDOW();
+          if ( dow === "saturday" || dow === "sunday" ) {
+            weekend = true;
+          }
+          else {
+            weekday = true;
+          }
         }
+
       }
 
       // Return the weekday state
-      return callback(weekday);
+      return _finish();
 
     });
 
   });
+
+
+  /**
+   * Return the DOW Code
+   * @private
+   */
+  function _finish() {
+    if ( weekday && weekend ) {
+      return callback(2);
+    }
+    else if ( weekday && !weekend ) {
+      return callback(1);
+    }
+    else if ( weekend && !weekday ) {
+      return callback(0);
+    }
+    else {
+      return callback(-1);
+    }
+  }
 
 }
 
@@ -156,7 +204,7 @@ function _operatesOnWeekday(db, tripId, callback) {
  * @param callback Callback function(boolean)
  * @private
  */
-function _isPeak(db, tripId, callback) {
+function _operatesDuringPeak(db, tripId, callback) {
 
   // Get Grand Central Info
   let select = "SELECT arrival_time, departure_time, direction_id " +
