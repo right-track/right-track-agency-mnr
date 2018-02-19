@@ -1,6 +1,8 @@
 'use strict';
 
-
+const path = require('path');
+const fs = require('fs');
+const readline = require('readline');
 const core = require('right-track-core');
 const DateTime = core.utils.DateTime;
 
@@ -9,7 +11,8 @@ const DateTime = core.utils.DateTime;
 const GCT_STOP_ID = '1';
 
 // List of Holidays with no Peak Service
-const HOLIDAYS = [20180115, 20180219];
+const HOLIDAYS_TABLE = '../rt/rt_holidays.csv';
+const HOLIDAYS = [];
 
 // SET TIME SECONDS
 const FIVE_AM = 18000;          // 5:00 AM
@@ -29,50 +32,55 @@ const EIGHT_PM = 72000;         // 8:00 PM
  */
 function peak(db, tripId, callback) {
 
-  // Check if the Trip Stops at GCT
-  _stopsAtGrandCentral(db, tripId, function(gct) {
+  // Read the Holidays from the Holidays Table
+  _readHolidays(function() {
 
-    // Stops at GCT...
-    if ( gct ) {
+    // Check if the Trip Stops at GCT
+    _stopsAtGrandCentral(db, tripId, function(gct) {
 
-
-      // Get the Days of the Week the Trip operates on
-      _getDOWCode(db, tripId, function(dow) {
-
-        // Operates on Weekday...
-        if ( dow > 0 ) {
+      // Stops at GCT...
+      if ( gct ) {
 
 
-          // Check if the Trip operates during peak times
-          _operatesDuringPeak(db, tripId, function(peak) {
+        // Get the Days of the Week the Trip operates on
+        _getDOWCode(db, tripId, function(dow) {
 
-            // Could be Peak...
-            if ( peak ) {
-              return callback(dow);
-            }
+          // Operates on Weekday...
+          if ( dow > 0 ) {
 
-            // Does not operate during peak times...
-            else {
-              return callback(0);
-            }
 
-          });
+            // Check if the Trip operates during peak times
+            _operatesDuringPeak(db, tripId, function(peak) {
 
-        }
+              // Could be Peak...
+              if ( peak ) {
+                return callback(dow);
+              }
 
-        // Does not Operate on Weekday...
-        else {
-          return callback(0);
-        }
+              // Does not operate during peak times...
+              else {
+                return callback(0);
+              }
 
-      });
+            });
 
-    }
+          }
 
-    // Does not Stop at GCT...
-    else {
-      return callback(0)
-    }
+          // Does not Operate on Weekday...
+          else {
+            return callback(0);
+          }
+
+        });
+
+      }
+
+      // Does not Stop at GCT...
+      else {
+        return callback(0)
+      }
+
+    });
 
   });
 
@@ -258,6 +266,69 @@ function _operatesDuringPeak(db, tripId, callback) {
   });
 
 }
+
+
+
+
+/**
+ * Parse the Holidays file and add Holidays that do not have
+ * peak service to the Holidays list
+ * @param callback
+ * @private
+ */
+function _readHolidays(callback) {
+
+  // Full Location to file
+  let location = path.normalize(__dirname + '/' + HOLIDAYS_TABLE);
+
+  // File Exists...
+  if ( fs.existsSync(location) ) {
+
+    // File headers
+    let headers = [];
+
+    let lineReader = readline.createInterface({
+      input: fs.createReadStream(location)
+    });
+
+    lineReader.on('line', function (line) {
+      let values = line.split(',');
+      if ( headers.length === 0 ) {
+        headers = values;
+      }
+      else if ( values.length === headers.length ) {
+        let params = {};
+        for ( let i = 0; i < values.length; i++ ) {
+          params[headers[i]] = values[i];
+        }
+
+        // Add Holidays no peak service
+        if ( parseInt(params.peak) === 0 ) {
+          HOLIDAYS.push(parseInt(params.date));
+        }
+
+      }
+    });
+
+    lineReader.on('close', function() {
+      _finish();
+    });
+
+  }
+
+  // File Does Not Exist...
+  else {
+    _finish();
+  }
+
+
+  function _finish() {
+    return callback();
+  }
+
+}
+
+
 
 
 
