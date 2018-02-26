@@ -34,6 +34,36 @@
   },
   "transit": {
     "agency": "mta",
-    "division": "mnr"
+    "division": "mnr",
+    "lines": [
+      {
+        "routeShortName": "Hudson",
+        "lineCode": "Hudson"
+      },
+      {
+        "routeShortName": "Harlem",
+        "lineCode": "Harlem"
+      },
+      {
+        "routeShortName": "Harlem",
+        "lineCode": "Wassaic"
+      },
+      {
+        "routeShortName": "New Haven",
+        "lineCode": "New-Haven"
+      },
+      {
+        "routeShortName": "New Canaan",
+        "lineCode": "New-Canaan"
+      },
+      {
+        "routeShortName": "Danbury",
+        "lineCode": "Danbury"
+      },
+      {
+        "routeShortName": "Waterbury",
+        "lineCode": "Waterbury"
+      }
+    ]
   }
 }
