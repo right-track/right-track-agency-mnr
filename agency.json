@@ -31,5 +31,9 @@
     "primaryText": "#dddddd",
     "secondary": "#263238",
     "secondaryText": "#dddddd"
+  },
+  "transit": {
+    "agency": "mta",
+    "division": "mnr"
   }
 }
