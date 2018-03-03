@@ -408,7 +408,13 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
 
 
           // Add Delay Time to estimated departure
-          let estDeparture = dep.clone().deltaMins(delay);
+          let estDeparture = dep.clone();
+          try {
+            estDeparture = estDeparture.deltaMins(delay);
+          }
+          catch(err) {
+            console.log("WARNING: Could not add " + delay + " mins to departure (" + dep.toString() + ")");
+          }
 
 
           // Build the Status
