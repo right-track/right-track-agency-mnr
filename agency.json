@@ -1,5 +1,6 @@
 {
   "name": "Metro North Railroad & SLE",
+  "title": "Right Track: Metro North",
   "id": "mnr",
   "maintainer": {
     "name": "David Waring",
@@ -20,7 +21,8 @@
   },
   "static": {
     "img": {
-      "icon": "./static/img/icon.png"
+      "icon": "./static/img/icon.png",
+      "android": "./static/img/app/android/"
     }
   },
   "build": {
