@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const https = require('https');
 const URL = require('url');
 const UnZip = require('decompress-zip');
 
@@ -147,6 +148,12 @@ function _checkForUpdate(updateUrl, dir, log, errors, callback) {
   // Parse the URL
   let url = URL.parse(updateUrl);
 
+  // Get the protocol
+  let protocol = http;
+  if ( url.protocol.includes('https:') ) {
+    protocol = https;
+  }
+
   // Set request options
   let options = {
     method: 'HEAD',
@@ -155,7 +162,7 @@ function _checkForUpdate(updateUrl, dir, log, errors, callback) {
   };
 
   // Make the request
-  let req = http.request(options, function(res) {
+  let req = protocol.request(options, function(res) {
     let headers = res.headers;
     let serverLastModified = new Date(headers['last-modified']);
 
@@ -262,8 +269,14 @@ function _downloadZip(url, dir, log, errors, callback) {
   // Set output file
   let zip = fs.createWriteStream(gtfsZip);
 
+  // Parse protocol
+  protocol = http;
+  if ( url.includes('https:') ) {
+    protocol = https;
+  }
+
   // Make the request
-  http.get(url, function(response) {
+  protocol.get(url, function(response) {
     let serverLastModified = response.headers['last-modified'];
     response.pipe(zip);
 
