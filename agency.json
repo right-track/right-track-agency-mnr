@@ -27,7 +27,7 @@
   },
   "build": {
     "updateURL_MNR": "http://web.mta.info/developers/data/mnr/google_transit.zip",
-    "updateURL_SLE": "http://www.shorelineeast.com/google_transit.zip"
+    "updateURL_SLE": "https://www.shorelineeast.com/google_transit.zip"
   },
   "colors": {
     "primary": "#c62828",
