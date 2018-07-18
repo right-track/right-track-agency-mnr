@@ -270,7 +270,7 @@ function _downloadZip(url, dir, log, errors, callback) {
   let zip = fs.createWriteStream(gtfsZip);
 
   // Parse protocol
-  protocol = http;
+  let protocol = http;
   if ( url.includes('https:') ) {
     protocol = https;
   }
