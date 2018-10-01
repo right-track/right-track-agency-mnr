@@ -235,29 +235,37 @@ function _operatesDuringPeak(db, tripId, callback) {
 
     // INBOUND TRIPS
     if ( direction === 1 ) {
-      let arrival = DateTime.createFromTime(arrivalTime).getTimeSeconds();
-
-      // Peak: Arrival time between 5 and 10 AM
-      if ( arrival >= FIVE_AM && arrival <= TEN_AM ) {
-        return callback(true);
+      try {
+        let arrival = DateTime.createFromTime(arrivalTime).getTimeSeconds();
+  
+        // Peak: Arrival time between 5 and 10 AM
+        if ( arrival >= FIVE_AM && arrival <= TEN_AM ) {
+          return callback(true);
+        }
       }
-
+      catch(err) {
+        console.log("ERR: " + err);
+      }
     }
 
     // OUTBOUND TRIPS
     else if ( direction === 0 ) {
-      let departure = DateTime.createFromTime(departureTime).getTimeSeconds();
-
-      // Peak: Departure between 4 and 8 PM
-      if ( departure >= FOUR_PM && departure <= EIGHT_PM ) {
-        return callback(true);
+      try {
+        let departure = DateTime.createFromTime(departureTime).getTimeSeconds();
+  
+        // Peak: Departure between 4 and 8 PM
+        if ( departure >= FOUR_PM && departure <= EIGHT_PM ) {
+          return callback(true);
+        }
+  
+        // Reverse Peak: Departure between 5:30 and 9 AM
+        else if ( departure >= FIVE_THIRTY_AM && departure <= NINE_AM ) {
+          return callback(true);
+        }
       }
-
-      // Reverse Peak: Departure between 5:30 and 9 AM
-      else if ( departure >= FIVE_THIRTY_AM && departure <= NINE_AM ) {
-        return callback(true);
+      catch(err) {
+        console.log("ERR: " + err);
       }
-
     }
 
     // Default: Not peak
