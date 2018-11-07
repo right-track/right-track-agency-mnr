@@ -9,11 +9,12 @@
     "docs": "jsdoc -c jsdoc.json --readme README.md --template $NODE_PATH/@dwaring87/docdash"
   },
   "dependencies": {
+    "decompress-zip": "^0.3.0",
     "deepmerge": "^2.0.1",
     "memory-cache": "^0.2.0",
     "node-html-parser": "^1.1.6",
     "right-track-agency": "^1.1.0",
-    "right-track-core": "^1.0.0",
+    "right-track-core": "^1.5.2",
     "right-track-db": "^1.2.0"
   },
   "devDependencies": {
