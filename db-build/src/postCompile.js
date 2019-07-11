@@ -97,10 +97,11 @@ function postCompile(agencyOptions, db, log, errors, callback) {
       db.exec("UPDATE gtfs_directions SET description='Outbound' WHERE direction_id=0;");
       db.exec("UPDATE gtfs_directions SET description='Inbound' WHERE direction_id=1;");
 
-      // Set pickup_type and drop_off_type = 0 at all stops EXCEPT:
-      // 125th St (4) and Fordham (56) White Plains (74) and Croton-Harmon (33)
-      console.log("    ... Fixing pickup/drop-off types");
-      db.exec("UPDATE gtfs_stop_times SET pickup_type=0, drop_off_type=0 WHERE stop_id <> 4 AND stop_id <> 56 AND stop_id <> 74 AND stop_id <> 33;");
+      // Set pickup_type and drop_off_type values
+      console.log("    ... Setting pickup_type and drop_off_type values");
+      db.exec("UPDATE gtfs_stop_times SET pickup_type = 0, drop_off_type = 0;");
+      db.exec("UPDATE gtfs_stop_times SET pickup_type = 1 WHERE note_id='D';");
+      db.exec("UPDATE gtfs_stop_times SET drop_off_type = 1 WHERE note_id='R'");
 
       // Add SLE Route Graph Entries
       console.log("    ... Adding SLE to rt_route_graph");
@@ -113,10 +114,11 @@ function postCompile(agencyOptions, db, log, errors, callback) {
       db.exec("DELETE FROM gtfs_trips WHERE trip_id IN (SELECT trip_id FROM gtfs_trips WHERE service_id IN (SELECT service_id FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar_dates WHERE service_id IN(SELECT service_id FROM gtfs_calendar_dates WHERE date < " + date + ") AND service_id NOT IN (SELECT service_id FROM gtfs_calendar_dates WHERE date >= " + date + ") AND exception_type = 1) AND monday = 0 AND tuesday = 0 AND wednesday = 0 AND thursday = 0 AND friday = 0 AND saturday = 0 AND sunday = 0));");
       db.exec("DELETE FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar_dates WHERE service_id IN(SELECT service_id FROM gtfs_calendar_dates WHERE date < " + date + ") AND service_id NOT IN (SELECT service_id FROM gtfs_calendar_dates WHERE date >= " + date + ") AND exception_type = 1) AND monday = 0 AND tuesday = 0 AND wednesday = 0 AND thursday = 0 AND friday = 0 AND saturday = 0 AND sunday = 0);");
       db.exec("DELETE FROM gtfs_calendar_dates WHERE service_id IN (SELECT service_id FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar_dates WHERE service_id IN(SELECT service_id FROM gtfs_calendar_dates WHERE date < " + date + ") AND service_id NOT IN (SELECT service_id FROM gtfs_calendar_dates WHERE date >= " + date + ") AND exception_type = 1) AND monday = 0 AND tuesday = 0 AND wednesday = 0 AND thursday = 0 AND friday = 0 AND saturday = 0 AND sunday = 0);");
-      db.exec("VACUUM;");
       
       db.exec("COMMIT", function() {
-        return callback();
+        db.exec("VACUUM;", function() {
+          return callback();
+        });
       });
     });
 
