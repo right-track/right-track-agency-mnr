@@ -25,9 +25,14 @@ function postCompile(agencyOptions, db, log, errors, callback) {
       console.log("    ... Removing unused agencies");
       db.exec("DELETE FROM gtfs_agency WHERE agency_id <> '1' AND agency_id <> 'SLE';");
 
+      // Set agency of SLE routes
+      console.log("    ... Updating SLE routes");
+      db.exec("UPDATE gtfs_routes SET agency_id='SLE' WHERE route_id LIKE 'SLE%';");
+      db.exec("UPDATE gtfs_routes SET route_color='f43b45', route_text_color='100000' WHERE agency_id='SLE';");
+
       // Remove unused routes
       console.log("    ... Removing unused routes");
-      db.exec("DELETE FROM gtfs_routes WHERE agency_id <> '1' AND route_id <> 'SLE';");
+      db.exec("DELETE FROM gtfs_routes WHERE agency_id <> '1' AND agency_id <> 'SLE';");
 
       // Update Route Long Names
       console.log("    ... Updating route names");
@@ -37,10 +42,6 @@ function postCompile(agencyOptions, db, log, errors, callback) {
       db.exec("UPDATE gtfs_routes SET route_long_name='Waterbury Branch' WHERE route_short_name='Waterbury';");
       db.exec("UPDATE gtfs_routes SET route_long_name='Hudson Line' WHERE route_short_name='Hudson';");
       db.exec("UPDATE gtfs_routes SET route_long_name='Harlem Line' WHERE route_short_name='Harlem';");
-
-      // Set SLE Route Agency ID and Colors
-      console.log("    ... Updating SLE route info");
-      db.exec("UPDATE gtfs_routes SET agency_id='SLE', route_color='f43b45', route_text_color='100000' WHERE route_id='SLE';");
 
       // Update stop_ids in stop_times
       console.log("    ... Updating SLE Stop IDs");
