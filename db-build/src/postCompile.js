@@ -1,5 +1,8 @@
 'use strict';
 
+const DateTime = require('right-track-core').utils.DateTime;
+
+
 /**
  * MNR Post-Compile Script
  * This script performs the MNR-specific Database fixes
@@ -102,6 +105,15 @@ function postCompile(agencyOptions, db, log, errors, callback) {
       // Add SLE Route Graph Entries
       console.log("    ... Adding SLE to rt_route_graph");
       db.exec("INSERT INTO rt_route_graph (direction_id, stop1_id, stop2_id) VALUES (0,'149','1112'), (0,'1112','1115'), (0,'1115','1116'), (0,'1116','1117'), (0,'151','1111'), (0,'1111','1112'), (0,'1112','1113'), (0,'1113','1114'), (0,'1114','1115'), (1,'1116','1115'), (1,'1115','1114'), (1,'1114','1113'), (1,'1113','1112'), (1,'1112','1111'), (1,'1111','151'), (1,'1117','1116'), (1,'1115','1112'), (1,'1112','149'), (0,'149','1116'), (1,'1117','149'), (1,'1112','151'), (1,'1116','149');");
+
+      // Clean Database
+      console.log("    ... Removing old data");
+      let date = DateTime.now().date;
+      db.exec("DELETE FROM gtfs_stop_times WHERE trip_id IN (SELECT trip_id FROM gtfs_trips WHERE service_id IN (SELECT service_id FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar_dates WHERE service_id IN(SELECT service_id FROM gtfs_calendar_dates WHERE date < " + date + ") AND service_id NOT IN (SELECT service_id FROM gtfs_calendar_dates WHERE date >= " + date + ") AND exception_type = 1) AND monday = 0 AND tuesday = 0 AND wednesday = 0 AND thursday = 0 AND friday = 0 AND saturday = 0 AND sunday = 0));");
+      db.exec("DELETE FROM gtfs_trips WHERE trip_id IN (SELECT trip_id FROM gtfs_trips WHERE service_id IN (SELECT service_id FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar_dates WHERE service_id IN(SELECT service_id FROM gtfs_calendar_dates WHERE date < " + date + ") AND service_id NOT IN (SELECT service_id FROM gtfs_calendar_dates WHERE date >= " + date + ") AND exception_type = 1) AND monday = 0 AND tuesday = 0 AND wednesday = 0 AND thursday = 0 AND friday = 0 AND saturday = 0 AND sunday = 0));");
+      db.exec("DELETE FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar_dates WHERE service_id IN(SELECT service_id FROM gtfs_calendar_dates WHERE date < " + date + ") AND service_id NOT IN (SELECT service_id FROM gtfs_calendar_dates WHERE date >= " + date + ") AND exception_type = 1) AND monday = 0 AND tuesday = 0 AND wednesday = 0 AND thursday = 0 AND friday = 0 AND saturday = 0 AND sunday = 0);");
+      db.exec("DELETE FROM gtfs_calendar_dates WHERE service_id IN (SELECT service_id FROM gtfs_calendar WHERE service_id IN (SELECT service_id FROM gtfs_calendar_dates WHERE service_id IN(SELECT service_id FROM gtfs_calendar_dates WHERE date < " + date + ") AND service_id NOT IN (SELECT service_id FROM gtfs_calendar_dates WHERE date >= " + date + ") AND exception_type = 1) AND monday = 0 AND tuesday = 0 AND wednesday = 0 AND thursday = 0 AND friday = 0 AND saturday = 0 AND sunday = 0);");
+      db.exec("VACUUM;");
       
       db.exec("COMMIT", function() {
         return callback();
