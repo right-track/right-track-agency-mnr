@@ -42,26 +42,18 @@ function update(agencyOptions, log, errors, callback) {
     _runUpdate(url_mnr, dir_mnr, force || success_sle, log, errors, function(update_mnr, success_mnr) {
 
 
-      // Set published
-      let published = undefined;
+      // Set path to last modified file
+      let lm_path = undefined;
       if ( (!update_mnr || !success_mnr) && (update_sle && success_sle) ) {
-        published = new Date(
-          fs.readFileSync(
-            path.normalize(
-              agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_SLE + "/published.txt"
-            )
-          ).toString()
-        );
+        lm_path = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_SLE + "/published.txt");
       }
       else {
-        published = new Date(
-          fs.readFileSync(
-            path.normalize(
-              agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_MNR + "/published.txt"
-            )
-          ).toString()
-        );
+        lm_path = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_MNR + "/published.txt");
       }
+
+      // Get published date
+      let lm = fs.readFileSync(lm_path).toString().trim().split('\n');
+      let published = new Date(lm[0]);
 
       // Set notes
       let now = new Date();
@@ -103,6 +95,11 @@ function update(agencyOptions, log, errors, callback) {
  * @private
  */
 function _runUpdate(url, dir, force, log, errors, callback) {
+
+  // Create the directory, if necessary
+  if ( !fs.existsSync(dir) ) {
+    fs.mkdirSync(dir);
+  }
 
   // Check for GTFS Update
   _checkForUpdate(url, dir, log, errors, function(update) {
@@ -198,14 +195,16 @@ function _checkForUpdate(updateUrl, dir, log, errors, callback) {
     // Check if our last modified file exists
     if ( fs.existsSync(lastModifiedFile) ) {
 
-      let ts = fs.readFileSync(lastModifiedFile).toString().trim();
-      let local = new Date(ts);
+      let lm = fs.readFileSync(lastModifiedFile).toString().trim().split('\n');
+      let local = new Date(lm[0]);
+      let compiled = lm[1] && lm[1].split('=').length === 2 && lm[1].split('=')[0] === 'compiled' ? lm[1].split('=')[1] : undefined;
 
       log("       server: " + server);
       log("       local: " + local);
+      log("       compiled: DB Version " + compiled);
 
       // No update required...
-      if ( server <= local ) {
+      if ( compiled && server <= local ) {
         return callback(false);
       }
 

@@ -1,6 +1,11 @@
 'use strict';
 
+const path = require('path');
+const fs = require('fs');
 const DateTime = require('right-track-core').utils.DateTime;
+
+const GTFS_DIR_MNR = "./db-build/gtfs";
+const GTFS_DIR_SLE = "./db-build/sle";
 
 
 /**
@@ -119,7 +124,17 @@ function postCompile(agencyOptions, db, log, errors, callback) {
       
       db.exec("COMMIT", function() {
         db.exec("VACUUM;", function() {
-          return callback();
+
+          // Set SLE compiled flag in last modified file
+          let lm_sle = path.normalize(agencyOptions.agency.moduleDirectory + "/" + GTFS_DIR_SLE + "/published.txt");
+          let contents_sle = fs.readFileSync(lm_sle).toString().split("\n");
+          let contents_new_sle = [];
+          contents_new_sle[0] = contents_sle[0];
+          contents_new_sle[1] = "compiled=" + agencyOptions.version;
+          fs.writeFile(lm_sle, contents_new_sle.join('\n'), function() {
+            return callback();
+          });
+
         });
       });
     });
