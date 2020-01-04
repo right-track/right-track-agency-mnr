@@ -163,6 +163,16 @@ function _checkForUpdate(updateUrl, dir, log, errors, callback) {
     let headers = res.headers;
     let serverLastModified = new Date(headers['last-modified']);
 
+    // Ignore MNR updates at 1 AM
+    if ( updateUrl.includes('mnr') ) {
+      let h = serverLastModified.toLocaleString('en-US', {hour: 'numeric', hour12: false, timeZone: 'America/New_York' })
+      if ( h === "00" ) {
+        log("       server: " + serverLastModified);
+        log("       GTFS Update: IGNORE");
+        return callback(false);
+      }
+    }
+
     // Compare the Last Modified Date/Times
     _compare(serverLastModified);
 
