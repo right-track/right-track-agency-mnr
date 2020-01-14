@@ -151,11 +151,17 @@ function _updateGTFSRT(callback) {
  */
 function _parseGTFSRT(data, callback) {
 
-  // Parse response to JSON
-  data = JSON.parse(data);
-
   // Return a list of objects of {trip: shortName, stop: stopId, delay: seconds}
   let rtn = {};
+
+  // Parse response to JSON
+  try {
+    data = JSON.parse(data);  
+  }
+  catch (err) {
+    console.log("ERROR: Could not parse MNR GTFS-RT data");
+    return callback(rtn);
+  }
 
   // Make sure we have data
   if ( data !== undefined ) {
