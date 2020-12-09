@@ -428,7 +428,10 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
             statusText,
             delay,
             estDeparture,
-            track,
+            {
+              track: track,
+              scheduled: statusText === "Scheduled"
+            },
             remarks
           );
 
