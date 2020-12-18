@@ -307,8 +307,8 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
   // Page has tables...
   if ( tables !== undefined && tables.length > 0 ) {
 
-    // Get the first table
-    let table = tables[0];
+    // Get the last table
+    let table = tables[tables.length-1];
 
     // Get the table's rows
     let rows = table.querySelectorAll('tr');
