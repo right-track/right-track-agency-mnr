@@ -13,10 +13,11 @@ const Status = SF.StationFeedDepartureStatus;
 
 
 // Amount of time (ms) to keep cached data
-let CACHE_TIME = 60*1000;
+const CACHE_TIME_RT = 120*1000;
+const CACHE_TIME_TT = 60*1000;
 
 // Amount of time (ms) for download to timeout
-let DOWNLOAD_TIMEOUT = 7*1000;
+const DOWNLOAD_TIMEOUT = 7*1000;
 
 // Agency Configuration
 let CONFIG = {};
@@ -214,7 +215,7 @@ function _parseGTFSRT(data, callback) {
 
   // Add data to cache
   if ( Object.keys(rtn).length > 0 ) {
-    cache.put('GTFS-RT', rtn, CACHE_TIME);
+    cache.put('GTFS-RT', rtn, CACHE_TIME_RT);
   }
 
   // Return list of delays
@@ -459,7 +460,7 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
                 updated: DateTime.now(),
                 departures: DEPARTURES
               },
-              CACHE_TIME
+              CACHE_TIME_TT
             );
 
             // Return Data
