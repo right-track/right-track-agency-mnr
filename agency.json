@@ -52,31 +52,31 @@
     "lines": [
       {
         "routeShortName": "Hudson",
-        "lineCode": "Hudson"
+        "lineCode": "hudson"
       },
       {
         "routeShortName": "Harlem",
-        "lineCode": "Harlem"
+        "lineCode": "harlem"
       },
       {
         "routeShortName": "Wassaic",
-        "lineCode": "Wassaic"
+        "lineCode": "wassaic"
       },
       {
         "routeShortName": "New Haven",
-        "lineCode": "New-Haven"
+        "lineCode": "new-haven"
       },
       {
         "routeShortName": "New Canaan",
-        "lineCode": "New-Canaan"
+        "lineCode": "new-canaan"
       },
       {
         "routeShortName": "Danbury",
-        "lineCode": "Danbury"
+        "lineCode": "danbury"
       },
       {
         "routeShortName": "Waterbury",
-        "lineCode": "Waterbury"
+        "lineCode": "waterbury"
       }
     ]
   }
