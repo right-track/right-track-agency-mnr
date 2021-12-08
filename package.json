@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "docs": "jsdoc -c jsdoc.json --readme README.md --template $NODE_PATH/@dwaring87/docdash"
+    "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {
-    "decompress-zip": "^0.3.2",
+    "decompress-zip": "^0.3.0",
     "deepmerge": "^2.0.1",
     "memory-cache": "^0.2.0",
     "node-html-parser": "^1.1.6",
@@ -18,7 +18,7 @@
     "right-track-db": "^1.2.5"
   },
   "devDependencies": {
-    "@dwaring87/docdash": "^0.4.1",
+    "foodoc": "^0.0.9",
     "jsdoc": "^3.6.3"
   },
   "peerDependencies": {
