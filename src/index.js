@@ -1,6 +1,8 @@
 'use strict';
 
-const RightTrackAgency = require('right-track-agency');
+const core = require('right-track-core');
+const RightTrackAgency = core.classes.RightTrackAgency;
+const RightTrackDB = core.classes.RightTrackDB;
 const feed = require('./feed.js');
 
 const moduleDirectory = __dirname + "/../";
@@ -10,8 +12,8 @@ const moduleDirectory = __dirname + "/../";
  * `RightTrackAgency` implementation for **Metro North Railroad & SLE**.
  *
  * For more information, see:
- * - Right Track Agency project ({@link https://github.com/right-track/right-track-agency})
- * - Right Track Agency documentation ({@link https://docs.righttrack.io/right-track-agency})
+ * - Right Track core module ({@link https://github.com/right-track/right-track-core})
+ * - Right Track core documentation ({@link https://docs.righttrack.io/right-track-core})
  * @class
  */
 class MNR extends RightTrackAgency {
