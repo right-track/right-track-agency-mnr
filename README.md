@@ -1,14 +1,12 @@
 Metro North Railroad & SLE
 ==========================
 
-**node module:** [right-track-agency-mnr](https://www.npmjs.com/package/right-track-agency-mnr)  
 **GitHub repo:** [right-track/right-track-agency-mnr](https://github.com/right-track/right-track-agency-mnr)
 
 ---
 
-This module is an implementation of a [right-track-agency](https://github.com/right-track/right-track-agency) 
+This module is an implementation of a [_RightTrackAgency_](https://github.com/right-track/right-track-core#right-track-agency) 
 used to add agency-specific configuration and functionality to various [Right Track Projects](https://github.com/right-track).
-
 ### Features
 
 This module provides the following agency-specific information:
@@ -27,8 +25,8 @@ Documentation can be found in the **/doc/** directory of this repository
 or online at [https://docs.righttrack.io/right-track-agency-mnr](https://docs.righttrack.io/right-track-agency-mnr).
 
 Additional documentation about the `RightTrackAgency` class can be found in the 
-[right-track-agency](https://github.com/right-track/right-track-agency) project 
-and online at [https://docs.righttrack.io/right-track-agency](https://docs.righttrack.io/right-track-agency).
+[right-track-core](https://github.com/right-track/right-track-core) project 
+and online at [https://docs.righttrack.io/right-track-core](https://docs.righttrack.io/right-track-core).
 
 ### Usage
 
