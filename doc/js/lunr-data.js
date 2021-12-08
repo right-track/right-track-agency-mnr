@@ -62,9 +62,9 @@ window.lunrData = {
           "list:class"
         ],
         "MNR.html": [
-          "agenc",
           "amp",
           "class",
+          "core",
           "document",
           "https://docs.righttrack.io/right",
           "https://github.com/right",
@@ -72,9 +72,9 @@ window.lunrData = {
           "inform",
           "metro",
           "mnr",
+          "modul",
           "more",
           "north",
-          "project",
           "railroad",
           "right",
           "righttrackag",
@@ -129,10 +129,6 @@ window.lunrData = {
                     "index.html": {
                       "ref": "index.html",
                       "tf": 160
-                    },
-                    "MNR.html": {
-                      "ref": "MNR.html",
-                      "tf": 8
                     },
                     "MNR.html#isFeedSupported": {
                       "ref": "MNR.html#isFeedSupported",
@@ -376,6 +372,20 @@ window.lunrData = {
           },
           "o": {
             "docs": {},
+            "d": {
+              "docs": {},
+              "u": {
+                "docs": {},
+                "l": {
+                  "docs": {
+                    "MNR.html": {
+                      "ref": "MNR.html",
+                      "tf": 2
+                    }
+                  }
+                }
+              }
+            },
             "r": {
               "docs": {},
               "e": {
@@ -678,6 +688,20 @@ window.lunrData = {
               }
             }
           },
+          "o": {
+            "docs": {},
+            "r": {
+              "docs": {},
+              "e": {
+                "docs": {
+                  "MNR.html": {
+                    "ref": "MNR.html",
+                    "tf": 8
+                  }
+                }
+              }
+            }
+          },
           "h": {
             "docs": {},
             "e": {
@@ -941,32 +965,6 @@ window.lunrData = {
             }
           }
         },
-        "p": {
-          "docs": {},
-          "r": {
-            "docs": {},
-            "o": {
-              "docs": {},
-              "j": {
-                "docs": {},
-                "e": {
-                  "docs": {},
-                  "c": {
-                    "docs": {},
-                    "t": {
-                      "docs": {
-                        "MNR.html": {
-                          "ref": "MNR.html",
-                          "tf": 2
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
         "s": {
           "docs": {},
           "e": {
@@ -1175,6 +1173,7 @@ window.lunrData = {
       "callback",
       "check",
       "class",
+      "core",
       "db",
       "document",
       "feed",
@@ -1194,10 +1193,10 @@ window.lunrData = {
       "mnr",
       "mnr#isfeedsupport",
       "mnr#loadfe",
+      "modul",
       "more",
       "north",
       "origin",
-      "project",
       "railroad",
       "readm",
       "real",
@@ -1260,7 +1259,7 @@ window.lunrData = {
       "name": "MNR",
       "tags": "MNR",
       "summary": "",
-      "description": "RightTrackAgency implementation for Metro North Railroad &amp; SLE. For more information, see: Right Track Agency project (https://github.com/right-track/right-track-agency) Right Track Agency documentation (https://docs.righttrack.io/right-track-agency)",
+      "description": "RightTrackAgency implementation for Metro North Railroad &amp; SLE. For more information, see: Right Track core module (https://github.com/right-track/right-track-core) Right Track core documentation (https://docs.righttrack.io/right-track-core)",
       "body": ""
     },
     "MNR.html#isFeedSupported": {
