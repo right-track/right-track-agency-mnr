@@ -1,7 +1,7 @@
 'use strict';
 
 const http = require('http');
-const parse = require('node-html-parser').parse;
+const JSDOM = require('jsdom').JSDOM;
 const cache = require('memory-cache');
 const core = require('right-track-core');
 const DateTime = core.utils.DateTime;
@@ -298,10 +298,11 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
   }
 
   // Parse the returned data
-  let parsed = parse(data);
+  let dom = new JSDOM(data);
+  let document = dom.window.document;
 
   // Get tables from page
-  let tables = parsed.querySelectorAll('table');
+  let tables = document.getElementsByTagName("table");
 
   // Page has tables...
   if ( tables !== undefined && tables.length > 0 ) {
@@ -310,26 +311,26 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
     let table = tables[tables.length-1];
 
     // Get the table's rows
-    let rows = table.querySelectorAll('tr');
+    let rows = table.getElementsByTagName('tr');
 
     // Parse each row of the table, ignoring the header
     let count = 1;
     for ( let i = 1; i < rows.length; i++ ) {
       let row = rows[i];
-      let cells = row.querySelectorAll('td');
+      let cells = row.getElementsByTagName('td');
 
 
       // Get the data from the cells
-      let time = cells[0].rawText.replace(/^\s+|\s+$/g, '');
-      let destinationName = cells[1].rawText.replace(/^\s+|\s+$/g, '');
-      let track = cells[2].rawText.replace(/^\s+|\s+$/g, '');
+      let time = cells[0].innerHTML.replace(/^\s+|\s+$/g, '');
+      let destinationName = cells[1].innerHTML.replace(/^\s+|\s+$/g, '');
+      let track = cells[2].innerHTML.replace(/^\s+|\s+$/g, '');
       let statusText = 'Scheduled';
       let remarks = undefined;
       if ( origin.statusId === '1' ) {
-        remarks = cells[3].rawText.replace(/^\s+|\s+$/g, '');
+        remarks = cells[3].innerHTML.replace(/^\s+|\s+$/g, '');
       }
       else {
-        statusText = cells[3].rawText.replace(/^\s+|\s+$/g, '');
+        statusText = cells[3].innerHTML.replace(/^\s+|\s+$/g, '');
       }
 
 
