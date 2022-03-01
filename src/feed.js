@@ -319,6 +319,12 @@ function _parseTrainTime(db, origin, data, gtfsUpdates, callback) {
       let row = rows[i];
       let cells = row.getElementsByTagName('td');
 
+      // Row should have at least 4 columns
+      if ( !cells || cells.length < 4 ) {
+        return callback(
+          new Error('5003|Could Not Parse Station Data|The MTA TrainTime page did not return an expected response. Please try again later.')
+        );
+      }
 
       // Get the data from the cells
       let time = cells[0].innerHTML.replace(/^\s+|\s+$/g, '');
