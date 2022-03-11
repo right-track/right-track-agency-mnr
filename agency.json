@@ -22,6 +22,11 @@
       "apiKey": ""
     }
   },
+  "gtfsRt": {
+    "host": "api-endpoint.mta.info",
+    "path": "/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr",
+    "apiKey": "xLTJ1esvVc1EWPO5gzt8U1tZDBILShgz2YRCyGDA"
+  },
   "static": {
     "img": {
       "icon": "./static/img/icon.png",

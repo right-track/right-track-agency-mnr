@@ -4,6 +4,7 @@ const core = require('right-track-core');
 const RightTrackAgency = core.classes.RightTrackAgency;
 const RightTrackDB = core.classes.RightTrackDB;
 const feed = require('./feed.js');
+const vehicleFeed = require('./vehicleFeed.js');
 
 const moduleDirectory = __dirname + "/../";
 
@@ -43,6 +44,25 @@ class MNR extends RightTrackAgency {
    */
   loadFeed(db, origin, callback) {
     return feed(db, origin, this.config, callback);
+  }
+
+  /**
+   * Check if this Agency supports real-time Vehicle Feeds
+   * @returns {boolean} true if Vehicle Feeds are supported
+   */
+  isVehicleFeedSupported() {
+    return true;
+  }
+
+  /**
+   * Load all of the real-time Vehicle Feeds for the Agency
+   * @param {RightTrackDB} db The Right Track DB to query
+   * @param {function} callback Callback function
+   * @param {Error} callback.error Vehicle Feed Error. The Error's message will be a pipe (|) separated string in the format of: Error Code|Error Type|Error Message that will be parsed out by the Right Track API Server into a more specific error Response.
+   * @param {VehicleFeed[]} callback.feeds The build Vehicle Feeds for the Agency
+   */
+  loadVehicleFeed(db, callback) {
+    return vehicleFeed(db, this.config, callback);
   }
 
 }

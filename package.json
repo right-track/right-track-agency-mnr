@@ -13,6 +13,7 @@
     "deepmerge": "^2.0.1",
     "jsdom": "^19.0.0",
     "memory-cache": "^0.2.0",
+    "protobufjs": "^6.11.2",
     "right-track-core": "github:right-track/right-track-core"
   },
   "devDependencies": {
