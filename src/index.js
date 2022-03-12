@@ -61,7 +61,7 @@ class MNR extends RightTrackAgency {
    * @param {Error} callback.error Vehicle Feed Error. The Error's message will be a pipe (|) separated string in the format of: Error Code|Error Type|Error Message that will be parsed out by the Right Track API Server into a more specific error Response.
    * @param {VehicleFeed[]} callback.feeds The build Vehicle Feeds for the Agency
    */
-  loadVehicleFeed(db, callback) {
+  loadVehicleFeeds(db, callback) {
     return vehicleFeed(db, this.config, callback);
   }
 

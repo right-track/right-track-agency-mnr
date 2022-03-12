@@ -25,7 +25,7 @@
   "gtfsRt": {
     "host": "api-endpoint.mta.info",
     "path": "/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr",
-    "apiKey": "xLTJ1esvVc1EWPO5gzt8U1tZDBILShgz2YRCyGDA"
+    "apiKey": ""
   },
   "static": {
     "img": {
