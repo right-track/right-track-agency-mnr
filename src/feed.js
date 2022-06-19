@@ -128,7 +128,7 @@ function _buildDeparture(db, origin, departure, departure_trip) {
           // Set the Status Text
           let statusText = departure.status;
           if ( (statusText === "On Time" || statusText === "Late") && delay > 0 ) {
-            statusText = `Late ${delay/60} min`;
+            statusText = `Late ${delay/60}m`;
           }
 
           // FILTER DEPARTURES
@@ -147,6 +147,9 @@ function _buildDeparture(db, origin, departure, departure_trip) {
           if ( origin.id === "1" && destination?.id === "1" ) {
             return resolve();
           }
+
+          // Build Remarks
+          // let remarks = `Status: ${departure_trip.vehicle.status} | Stop: ${departure_trip.vehicle.stop}`;
 
           // Build Status
           let status = new Status(

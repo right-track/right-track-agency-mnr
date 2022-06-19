@@ -186,12 +186,12 @@ function _parseData(data, callback) {
       }
 
       // Save Trip
-      let trip_destination = trip_stops[trip_stops.length-1].id;
+      let trip_destination = trip_stops[trip_stops.length-1];
       trips[trip_id] = {
         id: trip_id,
         date: trip_date,
         route: trip_route,
-        destination: trip_destination,
+        destination: trip_destination?.id,
         stops: trip_stops,
         vehicle: {
           lat: vehicle_lat,
@@ -214,6 +214,7 @@ function _parseData(data, callback) {
     return callback(null, rtn);
   }
   catch (err) {
+    console.log(err);
     return callback(new Error('5003|Could not parse the MNR GTFS-RT feed|' + err));
   }
 }
