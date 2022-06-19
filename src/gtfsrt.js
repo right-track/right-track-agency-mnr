@@ -7,7 +7,7 @@ const DateTime = require('right-track-core').utils.DateTime;
 
 
 // Amount of time (ms) to keep cached data
-const CACHE_TIME = 60*1000;
+const CACHE_TIME = 45*1000;
 
 
 /**
