@@ -1,8 +1,6 @@
 'use strict';
 
-const https = require('https');
-const protobuf = require('protobufjs');
-const cache = require('memory-cache');
+const getData = require('./gtfsrt.js');
 const core = require('right-track-core');
 const DateTime = core.utils.DateTime;
 const StationFeed = core.classes.StationFeed.StationFeed;
@@ -10,14 +8,8 @@ const Departure = core.classes.StationFeed.StationFeedDeparture;
 const Status = core.classes.StationFeed.StationFeedDepartureStatus;
 
 
-// Amount of time (ms) to keep cached data
-const CACHE_TIME = 60*1000;
-
-// Amount of time (ms) for download to timeout
-const DOWNLOAD_TIMEOUT = 7*1000;
-
-// Agency Configuration
-let CONFIG = {};
+const DEPARTED_TIME = 5*60;   // Max time to display departed trains (5 min)
+const MAX_TIME = 3*60*60;     // Max time to display future departures (3 hours)
 
 
 /**
@@ -31,9 +23,6 @@ let CONFIG = {};
  * @private
  */
 function feed(db, origin, config, callback) {
-  CONFIG = config;
-
-  console.log("==> GET FEED: " + origin.statusId);
 
   // Make sure we have a valid status id
   if ( origin.statusId === '-1' ) {
@@ -43,7 +32,7 @@ function feed(db, origin, config, callback) {
   }
 
   // Get the GTFS-RT Data
-  _getData(function(err, data) {
+  getData(config, function(err, data) {
     if ( err ) return callback(err);
 
     // Build the feed for the requested stop
@@ -54,35 +43,50 @@ function feed(db, origin, config, callback) {
       return callback(null, feed);
 
     });
-
   });
-
 }
 
 
-function _buildFeed(db, origin, cached, callback) {
-  console.log("--> BUILD FEED: " + origin.statusId);
+/**
+ * Build the Station Feed for the requested Stop
+ * @param {RightTrackDB} db The Right Track DB to query GTFS data from
+ * @param {Stop} origin Origin Stop
+ * @param {Object} data GTFS-RT data, including stops and trips
+ * @param {function} callback Callback function(err, feed)
+ * @private
+ */
+function _buildFeed(db, origin, data, callback) {
   try {
-    let updated = DateTime.createFromJSDate(new Date(cached.updated));
-    let data = cached.data;
-    let d = data.hasOwnProperty(origin.statusId) ? data[origin.statusId] : [];
-
-    console.log("... from " + d.length + " departures");
+    let updated = DateTime.createFromJSDate(new Date(data.updated));
+    let stop_data = data.stops.hasOwnProperty(origin.id) ? data.stops[origin.id] : [];
+    let trip_data = data.trips;
 
     // Build each of the departures
     let p = [];
-    for ( let i = 0; i < d.length; i++ ) {
-      p.push(_buildDeparture(db, origin, d[i]));
+    for ( let i = 0; i < stop_data.length; i++ ) {
+      let departure = stop_data[i];
+      let departure_trip = trip_data[departure.trip_id];
+      p.push(_buildDeparture(db, origin, departure, departure_trip));
     }
+
+    // Execute promises
     Promise.all(p).then(function(departures) {
-      console.log("ALL DONE");
-      console.log(departures.length + " departures returned");
+
+      // Drop filtered departures
+      let rtn = [];
+      for ( let i = 0; i < departures.length; i++ ) {
+        if ( departures[i] ) {
+          rtn.push(departures[i]);
+        }
+      }
 
       // Build the feed
-      departures.sort(Departure.sort);
-      let feed = new StationFeed(origin, updated, departures);
+      rtn.sort(Departure.sort);
+      let feed = new StationFeed(origin, updated, rtn);
 
+      // Return the Feed
       return callback(null, feed);
+
     });
   }
   catch (err) {
@@ -91,213 +95,90 @@ function _buildFeed(db, origin, cached, callback) {
 }
 
 
-function _buildDeparture(db, origin, departure) {
+/**
+ * Build a StationFeedDeparture with the specified stop and trip info
+ * @param {RightTrackDB} db The Right Track DB to query GTFS data from
+ * @param {Stop} origin Origin Stop
+ * @param {Object} departure GTFS-RT stop data for the departure
+ * @param {Object} departure_trip GTFS-RT trip data for the departure
+ * @returns {StationFeedDeparture} A SFDeparture or undefined
+ * @private
+ */
+function _buildDeparture(db, origin, departure, departure_trip) {
   return new Promise(function(resolve, reject) {
-    console.log("--> BUILD DEPARTURE FROM " + origin.name);
-    console.log(departure);
-
-    let dateDT = DateTime.createFromDate(
-      departure.trip.date.substring(4)+
-      departure.trip.date.substring(0,2)+
-      departure.trip.date.substring(2,4)
-    );
-    let estDepartureDT = DateTime.createFromJSDate(new Date(departure.departure*1000));
-
-    // Get the destination Stop
-    core.query.stops.getStop(db, departure.trip.destination, function(err, destination) {
-
-      // Get the scheduled Trip
-      core.query.trips.getTripByShortName(db, departure.trip.id, dateDT.getDateInt(), function(err, trip) {
-
-        // Get the delay between scheduled stop time and estimated stop time
-        let schedDepartureDT = estDepartureDT.clone();
-        if ( trip && trip.hasStopTime(origin) ) {
-          let stopTime = trip.getStopTime(origin);
-          schedDepartureDT = stopTime.departure;
-        }
-        let delay = estDepartureDT.getTimeSeconds() - schedDepartureDT.getTimeSeconds();
-
-        // Set the Status Text
-        let statusText = departure.status;
-        if ( (statusText === "On-Time" || statusText === "Late") && delay > 0 ) {
-          statusText = `Late ${delay/60} min`;
-        }
-        else if ( statusText === "On-Time" ) {
-          statusText = "On Time";
-        }
-
-        // Build Status
-        let status = new Status(
-          statusText,
-          delay,
-          estDepartureDT,
-          {
-            track: departure.track,
-            scheduled: statusText === "Scheduled"
-          }
-        );
-
-        // Build the Departure
-        let rtn = new Departure(
-          schedDepartureDT,
-          destination,
-          trip,
-          status
-        );
-
-        resolve(rtn);
-
-      });
-
-    });
-
-  });
-}
-
-
-function _getData(callback) {
-  console.log("--> GET DATA");
-
-  // Check for cached data
-  let data = cache.get('GTFS-RT');
-  if ( data ) return callback(null, data);
-
-  // Update data from source
-  _updateData(function(err, data) {
-    if ( err ) return callback(err);
-
-    // Decode the protobuf
-    _decodeData(data, function(err, decoded) {
-      if ( err ) return callback(err);
-
-      // Parse the decoded data
-      _parseData(decoded, function(err, parsed) {
-        if ( err ) return callback(err);
-
-        // Store the parsed data in the cache
-        if ( parsed && Object.keys(parsed).length > 0 ) {
-          let cached = { updated: new Date().getTime(), data: parsed };
-          cache.put('GTFS-RT', cached, CACHE_TIME);
-          return callback(null, cached);
-        }
-        else {
-          return callback(new Error('5003|No MNR GTFS-RT Data returned|The MNR GTFS-RT feed did not return any parsed data'));
-        }
-
-      });
-    });
-  });
-
-}
-
-
-function _updateData(callback) {
-  console.log("--> UPDATE DATA");
-  try {
-    const options = {
-      method: 'GET',
-      hostname: CONFIG.stationFeed.host,
-      port: 443,
-      path: CONFIG.stationFeed.path,
-      headers: {
-          'x-api-key': CONFIG.stationFeed.apiKey
-      }
-    }
-
-    let buffer;
-    const req = https.request(options, function(res) {
-        let data = [];
-        res.on('data', function(d) {
-            data.push(d);
-        });
-        res.on('end', function() {
-            buffer = Buffer.concat(data);
-            return callback(null, buffer);
-        });
-    });
-
-    req.on('error', function(err) {
-      return callback(new Error('5003|Could not download MNR GTFS-RT Data|' + err));
-    });
-
-    req.end();
-  }
-  catch (err) {
-    return callback(new Error('5003|Could not download MNR GTFS-RT Data|' + err));
-  }
-}
-
-
-function _decodeData(data, callback) {
-  console.log("--> DECODE DATA");
-  protobuf.load(__dirname + "/gtfs-realtime.proto", function(err, root) {
-    if ( err ) callback(new Error('5003|Could not decode MNR GTFS-RT feed|' + err));
     try {
-      let FeedMessage = root.lookupType("FeedMessage");
-      let decoded = FeedMessage.decode(data);
-      return callback(null, decoded);
+
+      // Get the Estimated Departure
+      let estDepartureDT = DateTime.createFromJSDate(new Date(departure.departure));
+
+      // Get the Destination Stop
+      core.query.stops.getStop(db, departure_trip.destination, function(err, destination) {
+
+        // Get the scheduled Trip
+        core.query.trips.getTripByShortName(db, departure.trip_id, departure_trip.date, function(err, trip) {
+
+          // Get the delay between scheduled stop time and estimated stop time
+          let schedDepartureDT = estDepartureDT.clone();
+          if ( trip && trip.hasStopTime(origin) ) {
+            let stopTime = trip.getStopTime(origin);
+            schedDepartureDT = stopTime.departure;
+          }
+          let delay = estDepartureDT.getTimeSeconds() - schedDepartureDT.getTimeSeconds();
+
+          // Set the Status Text
+          let statusText = departure.status;
+          if ( (statusText === "On Time" || statusText === "Late") && delay > 0 ) {
+            statusText = `Late ${delay/60} min`;
+          }
+
+          // FILTER DEPARTURES
+          // Drop recently departed Trips or Trips too far in the future
+          let now_s = new Date().getTime();
+          let dep_s = departure.departure;
+          let delta = (dep_s - now_s)/1000;
+          if ( statusText === "Departed" && delta < (-1*DEPARTED_TIME) ) {
+            return resolve();
+          }
+          else if ( delta > (MAX_TIME) ) {
+            return resolve();
+          }
+
+          // Drop arrivals to GCT
+          if ( origin.id === "1" && destination?.id === "1" ) {
+            return resolve();
+          }
+
+          // Build Status
+          let status = new Status(
+            statusText,
+            delay,
+            estDepartureDT,
+            {
+              track: departure.track,
+              scheduled: statusText === "Scheduled"
+            }
+          );
+
+          // Build the Departure
+          let rtn = new Departure(
+            schedDepartureDT,
+            destination,
+            trip,
+            status
+          );
+
+          return resolve(rtn);
+
+        });
+      });
     }
     catch (err) {
-      return callback(new Error('5003|Could not decode MNR GTFS-RT feed|' + err));
+      console.log("ERROR: Could not build departure for " + origin.name);
+      console.log(departure);
+      resolve();
     }
   });
 }
-
-
-function _parseData(data, callback) {
-  console.log("--> PARSE DATA")
-  try {
-    let rtn = {};
-    let entities = data && data.entity || [];
-
-    // Parse the trips
-    for ( let i = 0; i < entities.length; i++ ) {
-      let entity = entities[i];
-      let trip_id = entity.id;
-      let trip_date = entity.tripUpdate.trip.startDate;
-      let trip_route = entity.tripUpdate.trip.routeId;
-      let stop_time_updates = entity.tripUpdate.stopTimeUpdate;
-
-      // Parse the stops
-      for ( let j = 0; j < stop_time_updates.length; j++ ) {
-        let stop_time_update = stop_time_updates[j];
-        let stop_id = stop_time_update.stopId;
-        let arrival = stop_time_update.arrival.time.low;
-        let departure = stop_time_update.departure.time.low;
-        let statuses = stop_time_update.status;
-
-        // Parse the status
-        let track;
-        let status;
-        for ( let k = 0; k < statuses.length; k++ ) {
-          track = statuses[k].track ? statuses[k].track : track;
-          status = statuses[k].trainStatus ? statuses[k].trainStatus : status;
-        }
-
-        // Add trip to stop
-        if ( !rtn.hasOwnProperty(stop_id) ) rtn[stop_id] = [];
-        rtn[stop_id].push({
-          trip: {
-            id: trip_id,
-            date: trip_date,
-            route: trip_route,
-            destination: stop_time_updates[stop_time_updates.length-1].stopId
-          },
-          arrival: arrival,
-          departure: departure,
-          track: track,
-          status: status
-        });
-      }
-    }
-    return callback(null, rtn);
-  }
-  catch (err) {
-    return callback(new Error('5003|Could not parse the MNR GTFS-RT feed|' + err));
-  }
-}
-
-
 
 
 // MODULE EXPORTS
