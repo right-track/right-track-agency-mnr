@@ -6,6 +6,7 @@ const DateTime = core.utils.DateTime;
 const StationFeed = core.classes.StationFeed.StationFeed;
 const Departure = core.classes.StationFeed.StationFeedDeparture;
 const Status = core.classes.StationFeed.StationFeedDepartureStatus;
+const Position = core.classes.StationFeed.StationFeedDeparturePosition;
 
 
 const DEPARTED_TIME = 5*60;   // Max time to display departed trains (5 min)
@@ -148,30 +149,64 @@ function _buildDeparture(db, origin, departure, departure_trip) {
             return resolve();
           }
 
-          // Build Remarks
-          // let remarks = `Status: ${departure_trip.vehicle.status} | Stop: ${departure_trip.vehicle.stop}`;
+          // Get Vehicle Position
+          let vehicle_lat = departure_trip?.vehicle?.lat;
+          let vehicle_lon = departure_trip?.vehicle?.lon;
+          let vehicle_status = departure_trip?.vehicle?.status;
+          let vehicle_stop_id = departure_trip?.vehicle?.stop;
+          let vehicle_updated = departure_trip?.vehicle?.updated ? 
+            DateTime.createFromJSDate(new Date(departure_trip.vehicle.updated)) : 
+            DateTime.now();
 
-          // Build Status
-          let status = new Status(
-            statusText,
-            delay,
-            estDepartureDT,
-            {
-              track: departure.track,
-              scheduled: statusText === "Scheduled"
+          // Get Vehicle Stop
+          core.query.stops.getStop(db, vehicle_stop_id, function(err, vehicle_stop) {
+            let vehicle_description;
+            if ( vehicle_stop ) {
+              if ( vehicle_status === 0 ) {
+                vehicle_description = "Arriving at " + vehicle_stop.name;
+              }
+              else if ( vehicle_status === 1 ) {
+                vehicle_description = "Stopped at " + vehicle_stop.name;
+              }
+              else if ( vehicle_status === 2 ) {
+                vehicle_description = "In transit to " + vehicle_stop.name;
+              }
             }
-          );
 
-          // Build the Departure
-          let rtn = new Departure(
-            schedDepartureDT,
-            destination,
-            trip,
-            status
-          );
+            // Build Position
+            let position;
+            if ( vehicle_lat && vehicle_lon && vehicle_description ) {
+              position = new Position(
+                vehicle_lat,
+                vehicle_lon,
+                vehicle_description,
+                vehicle_updated
+              );
+            }
 
-          return resolve(rtn);
+            // Build Status
+            let status = new Status(
+              statusText,
+              delay,
+              estDepartureDT,
+              {
+                track: departure.track,
+                scheduled: statusText === "Scheduled"
+              }
+            );
 
+            // Build the Departure
+            let rtn = new Departure(
+              schedDepartureDT,
+              destination,
+              trip,
+              status,
+              position
+            );
+
+            return resolve(rtn);
+
+          });
         });
       });
     }
