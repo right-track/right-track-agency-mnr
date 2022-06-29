@@ -144,11 +144,6 @@ function _buildDeparture(db, origin, departure, departure_trip) {
             return resolve();
           }
 
-          // Drop arrivals to GCT
-          if ( origin.id === "1" && destination?.id === "1" ) {
-            return resolve();
-          }
-
           // Get Vehicle Position
           let vehicle_lat = departure_trip?.vehicle?.lat;
           let vehicle_lon = departure_trip?.vehicle?.lon;
