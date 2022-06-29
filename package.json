@@ -1,6 +1,6 @@
 {
   "name": "right-track-agency-mnr",
-  "version": "1.7.0",
+  "version": "1.8.1",
   "description": "Right Track Agency: Metro North Railroad (mnr)",
   "author": "David Waring <dev@davidwaring.net> (https://davidwaring.net)",
   "license": "MIT",
@@ -11,10 +11,9 @@
   "dependencies": {
     "decompress-zip": "^0.3.0",
     "deepmerge": "^2.0.1",
-    "jsdom": "^19.0.0",
     "memory-cache": "^0.2.0",
-    "protobufjs": "^6.11.2",
-    "right-track-core": "github:right-track/right-track-core"
+    "protobufjs": "^6.11.3",
+    "right-track-core": "right-track/right-track-core"
   },
   "devDependencies": {
     "foodoc": "^0.0.9",
