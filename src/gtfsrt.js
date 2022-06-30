@@ -59,11 +59,11 @@ function _updateData(config, callback) {
   try {
     const options = {
       method: 'GET',
-      hostname: config.stationFeed.host,
+      hostname: config.gtfsRt.host,
       port: 443,
-      path: config.stationFeed.path,
+      path: config.gtfsRt.path,
       headers: {
-          'x-api-key': config.stationFeed.apiKey
+          'x-api-key': config.gtfsRt.apiKey
       }
     }
 
@@ -122,6 +122,9 @@ function _parseData(data, callback) {
   try {
     let updated = data && data.header && data.header.timestamp ? _convertTimestamp(data.header.timestamp) : new Date().getTime();
     let entities = data && data.entity ? data.entity : [];
+
+    const fs = require('fs');
+    fs.writeFileSync('./raw_data.json', JSON.stringify(data, null, 2));
 
     let stops = {};   // Parsed Stops
     let trips = {};   // Parsed Trips
@@ -210,6 +213,8 @@ function _parseData(data, callback) {
       trips: trips,
       stops: stops
     }
+
+    fs.writeFileSync('./parsed_data.json', JSON.stringify(data, null, 2));
 
     return callback(null, rtn);
   }

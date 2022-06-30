@@ -3,7 +3,9 @@
 const core = require('right-track-core');
 const RightTrackAgency = core.classes.RightTrackAgency;
 const RightTrackDB = core.classes.RightTrackDB;
-const feed = require('./feed.js');
+const StationFeed = core.classes.StationFeed.StationFeed;
+const VehicleFeed = core.classes.VehicleFeed.VehicleFeed;
+const stationFeed = require('./stationFeed.js');
 const vehicleFeed = require('./vehicleFeed.js');
 
 const moduleDirectory = __dirname + "/../";
@@ -43,7 +45,7 @@ class MNR extends RightTrackAgency {
    * @param {StationFeed} callback.feed The built StationFeed for the Stop
    */
   loadFeed(db, origin, callback) {
-    return feed(db, origin, this.config, callback);
+    return stationFeed(db, origin, this.config, callback);
   }
 
   /**

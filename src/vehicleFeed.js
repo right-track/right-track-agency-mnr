@@ -6,7 +6,7 @@ const DateTime = core.utils.DateTime;
 const VF = core.classes.VehicleFeed;
 const VehicleFeed = VF.VehicleFeed;
 const VehicleFeedPosition = VF.VehicleFeedPosition;
-const loadGtfsRt = require('./gtfsRt');
+const getData = require('./gtfsrt.js');
 
 
 /**
@@ -20,18 +20,14 @@ const loadGtfsRt = require('./gtfsRt');
 function vehicleFeed(db, config, callback) {
 
     // Load the GTFS RT data
-    loadGtfsRt(config, function(err, feed) {
-
-        // Server Error
-        if ( err ) {
-            return callback(new Error("5002|Server Error|Could not load the GTFS-RT feed for the agency."));
-        }
+    getData(config, function(err, data) {
+        if ( err ) return callback(err);
 
         // Parse the Feed
-        _parseFeed(db, feed).then(function(vfs) {
+        _buildFeed(db, data).then(function(vfs) {
             return callback(null, vfs);
         }).catch(function(err) {
-            return callback(new Error("5002|Server Error|Could not parse the GTFS-RT feed for the agency."));
+            return callback(new Error("5002|Server Error|Could not parse the GTFS-RT feed for the agency (" + err + ")."));
         });
 
     });
@@ -45,80 +41,78 @@ function vehicleFeed(db, config, callback) {
  * @param {Function} callback Callback function
  * @returns 
  */
-async function _parseFeed(db, feed) {
+async function _buildFeed(db, data) {
+    let trips = data && data.trips ? data.trips : {};
+    let feeds = [];
 
-    // Get the entities
-    let entities = feed?.entity ? feed.entity : [];
+    // Parse each trip
+    Object.keys(trips).forEach(async function(trip_id) {
+        let d = trips[trip_id];
+        let date = d.date ? parseInt(d.date) : DateTime.now().getDateInt();
+        let vehicle_lat = d.vehicle?.lat;
+        let vehicle_lon = d.vehicle?.lon;
+        let vehicle_status_id = d.vehicle?.status;
+        let vehicle_stop_id = d.vehicle?.stop;
+        let vehicle_updated_s = d.vehicle?.updated;
+        let vehicle_stops = d.stops ? d.stops : [];
 
-    // Parse each entity
-    let vfs = [];
-    for ( let i = 0; i < entities.length; i++ ) {
-        let e = entities[i];
-        if ( e.vehicle && e.vehicle.position && e.vehicle.position.latitude && e.vehicle.position.longitude ) {
-            let vf = await _parseEntity(db, e);
-            vfs.push(vf);
-        }
-    }
+        try {
+            let vehicle_updated = DateTime.createFromJSDate(vehicle_updated_s ? new Date(vehicle_updated_s) : new Date());
+            let vehicle_stop = _getStop(db, vehicle_stop_id);
+            let trip = _getTrip(db, trip_id, date);
 
-    // Return the vehicle feeds
-    return vfs;
-}
-
-
-/**
- * Parse the GTFS-RT entity into a Vehicle Feed with a Vehicle Feed Position
- * and remaining Stops
- * @param {RightTrackDB} db Right Track DB to query
- * @param {Object} e GTFS-RT entity to parse
- * @returns {VehicleFeed} parsed Vehicle Feed
- */
-async function _parseEntity(db, e) {
-    let tu = e?.tripUpdate;
-    let startDate = tu?.trip?.startDate;
-    let stu = tu?.stopTimeUpdate;
-    let v = e?.vehicle;
-    let id = v?.vehicle?.label;
-    let tripId = v?.trip?.tripId;
-    let timestamp = v?.timestamp;
-    let currentStatus = v?.currentStatus;
-    let stopId = v?.stopId;
-    let lat = v?.position?.latitude;
-    let lon = v?.position?.longitude;
-
-    let date = parseInt(startDate.substring(4,8) + startDate.substring(0,2) + startDate.substring(2,4));
-    let updated = DateTime.createFromJSDate(new Date(timestamp*1000));
-    let status = VehicleFeedPosition.VEHICLE_STATUS[currentStatus] ? VehicleFeedPosition.VEHICLE_STATUS[currentStatus] : VehicleFeedPosition.VEHICLE_STATUS.IN_TRANSIT_TO;
-    let stop = await _getStop(db, stopId);
-    let trip = await _getTrip(db, tripId, date);
-    
-    let stops = [];
-    if ( stu ) {
-        let next = false;
-        for ( let i = 0; i < stu.length; i++ ) {
-            let st = stu[i];
-            if ( st.stopId === stopId ) {
-                next = true;
+            // Set the Vehicle Status
+            let vehicle_status;
+            if ( vehicle_status_id === 0 ) {
+                vehicle_status = VehicleFeedPosition.VEHICLE_STATUS.INCOMING_AT;
             }
-            if ( next ) {
-                let s = await _getStop(db, st.stopId);
-                let a = DateTime.createFromJSDate(new Date(st.arrival.time.low*1000)).getTimeGTFS();
-                let d = DateTime.createFromJSDate(new Date(st.departure.time.low*1000)).getTimeGTFS();
-                let stopTime = new StopTime(s, a, d, i+1, { date: date });
-                stops.push(stopTime);
+            else if ( vehicle_status_id === 1 ) {
+                vehicle_status = VehicleFeedPosition.VEHICLE_STATUS.STOPPED_AT;
             }
-        }
-    }
+            else if ( vehicle_status_id === 2 ) {
+                vehicle_status = VehicleFeedPosition.VEHICLE_STATUS.IN_TRANSIT_TO;
+            }
 
-    let vfp = new VehicleFeedPosition(lat, lon, updated, {
-        status: status,
-        stop: stop
-    });
-    let vf = new VehicleFeed(id, vfp, {
-        trip: trip,
-        stops: stops
+            // Build the Position
+            let vfp = new VehicleFeedPosition(vehicle_lat, vehicle_lon, vehicle_updated, {
+                status: vehicle_status,
+                stop: vehicle_stop
+            });
+
+            // Build the StopTimes with the GTFS-RT data
+            let sts = [];
+            let next = false;
+            for ( let i = 0; i < vehicle_stops.length; i++ ) {
+                let st = vehicle_stops[i];
+                if ( st.id === vehicle_stop_id ) {
+                    next = true;
+                }
+                if ( next ) {
+                    let s = await _getStop(db, st.id);
+                    let a = st.arrival ? DateTime.createFromJSDate(new Date(st.arrival)).getTimeGTFS() : undefined;
+                    let d = st.departure ? DateTime.createFromJSDate(new Date(st.departure)).getTimeGTFS() : undefined;
+                    let stopTime = new StopTime(s, a, d, i+1, { date: date });
+                    sts.push(stopTime);
+                }
+            }
+
+            // Build the Feed
+            let vf = new VehicleFeed(trip_id, vfp, {
+                trip: trip,
+                stops: sts
+            });
+
+            // Add to list of feeds
+            feeds.push(vf);
+
+        }
+        catch (err) {
+            console.log("Could not build vehicle feed for trip " + trip_id + " [" + err + "]");
+            console.log(err);
+        }    
     });
 
-    return vf;
+    return feeds;
 }
 
 
@@ -135,7 +129,7 @@ function _getStop(db, id) {
                 return reject(err);
             }
             return resolve(stop);
-        })
+        });
     });
 }
 
@@ -154,8 +148,8 @@ function _getTrip(db, shortName, date) {
                 return reject(err);
             }
             return resolve(trip);
-        })
-    })
+        });
+    });
 }
 
 

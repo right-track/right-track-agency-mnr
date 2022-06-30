@@ -15,11 +15,6 @@
       "location": "1cJM5y6mAYzEE70mfbrdF3nE1NoaU2yH-"
     }
   },
-  "stationFeed": {
-    "host": "api-endpoint.mta.info",
-    "path": "/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr",
-    "apiKey": ""
-  },
   "gtfsRt": {
     "host": "api-endpoint.mta.info",
     "path": "/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr",
