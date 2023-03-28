@@ -1,0 +1,81 @@
+{
+  "name": "Metro North Railroad & SLE",
+  "title": "Right Track: Metro North",
+  "id": "mnr",
+  "maintainer": {
+    "name": "David Waring",
+    "email": "dev@davidwaring.net",
+    "website": "https://www.davidwaring.net/",
+    "source": "https://github.com/right-track/right-track-agency-mnr"
+  },
+  "db": {
+    "location": "./static/db/database.db",
+    "archive": {
+      "source": "google_drive",
+      "location": "1cJM5y6mAYzEE70mfbrdF3nE1NoaU2yH-"
+    }
+  },
+  "stationFeed": {
+    "host": "api-endpoint.mta.info",
+    "path": "/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr",
+    "apiKey": ""
+  },
+  "static": {
+    "img": {
+      "icon": "./static/img/icon.png",
+      "circle": {
+        "192": "./static/img/icon_circle_192.png",
+        "512": "./static/img/icon_circle_512.png"
+      },
+      "square": {
+        "192": "./static/img/icon_square_192.png",
+        "512": "./static/img/icon_square_512.png",
+        "1024": "./static/img/icon_square_1024.png"
+      }
+    }
+  },
+  "build": {
+    "updateURL_MNR": "http://web.mta.info/developers/data/mnr/google_transit.zip",
+    "updateURL_SLE": "https://shorelineeast.com/google_transit.zip"
+  },
+  "colors": {
+    "primary": "#c62828",
+    "primaryText": "#dddddd",
+    "secondary": "#263238",
+    "secondaryText": "#dddddd"
+  },
+  "transit": {
+    "agency": "mta",
+    "division": "mnr",
+    "lines": [
+      {
+        "routeShortName": "Hudson",
+        "lineCode": "hudson"
+      },
+      {
+        "routeShortName": "Harlem",
+        "lineCode": "harlem"
+      },
+      {
+        "routeShortName": "Wassaic",
+        "lineCode": "wassaic"
+      },
+      {
+        "routeShortName": "New Haven",
+        "lineCode": "new-haven"
+      },
+      {
+        "routeShortName": "New Canaan",
+        "lineCode": "new-canaan"
+      },
+      {
+        "routeShortName": "Danbury",
+        "lineCode": "danbury"
+      },
+      {
+        "routeShortName": "Waterbury",
+        "lineCode": "waterbury"
+      }
+    ]
+  }
+}
