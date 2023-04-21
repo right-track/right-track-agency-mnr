@@ -6,3 +6,4 @@
 /db-build/gtfs
 /db-build/out
 /db-build/sle
+/static/db/database.db
