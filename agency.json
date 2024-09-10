@@ -35,8 +35,8 @@
     }
   },
   "build": {
-    "updateURL_MNR": "http://web.mta.info/developers/data/mnr/google_transit.zip",
-    "updateURL_SLE": "https://shorelineeast.com/google_transit.zip"
+    "updateURL_MNR": "http://rrgtfsfeeds.s3.amazonaws.com/gtfsmnr.zip",
+    "updateURL_SLE": "https://www.cttransit.com/sites/default/files/gtfs/slegtfs.zip"
   },
   "colors": {
     "primary": "#c62828",
