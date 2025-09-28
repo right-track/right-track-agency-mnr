@@ -139,7 +139,7 @@ function _parseData(data, callback) {
       
       // Get Trip-level Details
       let trip_id = entity.id;
-      let trip_date = _convertDate(entity.tripUpdate.trip.startDate);
+      let trip_date = entity.tripUpdate.trip.startDate;
       let trip_route = entity.tripUpdate.trip.routeId;
       let trip_stops = [];
 
@@ -225,11 +225,7 @@ function _convertTimestamp(ts) {
 }
 
 function _convertDate(date) {
-  let dt = DateTime.createFromDate(
-    date.substring(4)+
-    date.substring(0,2)+
-    date.substring(2,4)
-  );
+  let dt = DateTime.createFromDate(date);
   return dt.getDateInt();
 }
 
